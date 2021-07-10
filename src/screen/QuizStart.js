@@ -27,7 +27,7 @@ import {
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Modal from 'react-native-modal'
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
-import { MyContext } from '../components/UseContext';
+// import { MyContext } from '../components/UseContext';
 import HTML from "react-native-render-html";
 import { IGNORED_TAGS, alterNode, makeTableRenderer } from 'react-native-render-html-table-bridge';
 import WebView from 'react-native-webview';
@@ -39,7 +39,7 @@ const windowWidth = Dimensions.get('window').width;
 const QuizStart = ({ navigation, route }) => {
   const { userid, quizKey } = route.params;
 
-  const { onReportQues } = useContext(MyContext)
+  // const { onReportQues } = useContext(MyContext)
 
   const [loading, setLoading] = useState(true);
   const [quizData, setQuizData] = useState([]);
@@ -867,7 +867,7 @@ const QuizStart = ({ navigation, route }) => {
               justifyContent: 'center',
               alignSelf: 'center', marginTop: 20
             }} onPress={() => {
-              onReportQues(questions[quesIndex].id, reportOption, message);
+              // onReportQues(questions[quesIndex].id, reportOption, message);
               setShowModal(false);
               setTap(false);
             }}>

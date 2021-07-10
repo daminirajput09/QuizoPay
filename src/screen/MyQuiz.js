@@ -145,7 +145,7 @@ const MyQuiz = ({navigation, route}) => {
       axiosClient().post('quizzes/getMyCompletedQuizzes',formData)
       .then((res) => {
         setLoader(false);
-        //console.log('get upcoming quiz res',res.data);
+        console.log('get upcoming quiz res',res.data.data,formData);
         if(res.data.Error == 0){
           setUpcomingQuiz(res.data.data);
         } else if(res.data.Error == 1) {

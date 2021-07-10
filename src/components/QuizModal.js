@@ -15,7 +15,7 @@ import { Tooltip } from 'react-native-elements';
 import moment from 'moment';
 
 const QuizModal = (props) => {
-  // console.log('props.diff', props.diff);
+  console.log('props.diff', props.diff);
   return (
     <View style={[styles.homeSectionView,{width:props.width}]}>
       <TouchableOpacity
@@ -24,7 +24,7 @@ const QuizModal = (props) => {
         style={{width: '100%', alignItems: 'center', alignSelf: 'center'}}>
         <View style={styles.firstRow}>
           <Text style={styles.firstRowText}>{props.item.name}</Text>
-          {props.diff == 0 && (
+          {props.diff <= 0 && (
             <View
               style={[
                 styles.thirdRowFirst,
@@ -54,19 +54,19 @@ const QuizModal = (props) => {
               style={{marginTop: 1, marginRight: 2}}
             />
             {props.expDate.diff(props.nowDate, 'days')>0 || props.notShow?
-                props.notShow?
+                // props.notShow?
                 <Text style={[styles.thirdRowText,{marginTop:2.5}]}>{moment(props.item.startdate).format('DD MMMM YYYY, h:mm:ss a')}</Text>
-                :
-                <Text style={[styles.thirdRowText,{marginTop:2.5}]}>{moment(props.item.startdate).format('DD MMMM YYYY')}</Text>
+                // :
+                // <Text style={[styles.thirdRowText,{marginTop:2.5}]}>{moment(props.item.startdate).format('DD MMMM YYYY')}</Text>
             :
             <CountDown
-              until={props.diff == 0 ? props.item.buffertime * 60 : props.diff} //(item.duration)*60}
+              until={props.diff <= 0 ? props.diff+props.item.buffertime * 60 : props.diff} //(item.duration)*60}
               onFinish={props.onFinish}
               // onPress={(time) => console.log('hello',time)}
               // onChange={props.onChange}
               size={12}
-              timeToShow={['D', 'H', 'M', 'S']}
-              timeLabels={{d: null, h: null, m: null, s: null}}
+              timeToShow={['H', 'M', 'S']} //'D', 
+              timeLabels={{h: null, m: null, s: null}} //d: null, 
               digitStyle={{backgroundColor: '#FFF', width: 15}}
               digitTxtStyle={{color: '#000'}}
               showSeparator

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { BackHandler, Text, View, StyleSheet, ActivityIndicator, TouchableOpacity, ScrollView, StatusBar, Dimensions,Alert, Keyboard } from 'react-native'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { MyContext } from '../components/UseContext';
+// import { MyContext } from '../components/UseContext';
 import Modal from 'react-native-modal';
 import axiosClient from '../api/axios-client'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
@@ -30,7 +30,7 @@ const SignIn = ({ navigation, route }) => {
     const [token, setToken] = useState('')
     const [loader, setLoader] = useState(true);
     const [mobNo, setMobNo] = useState('');
-    const { userId } = useContext(MyContext)
+    // const { userId } = useContext(MyContext)
 
     const [disableBtn, setDisableBtn] = useState(false);
     const [FcmToken, setFcmToken] = useState();

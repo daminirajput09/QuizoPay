@@ -225,7 +225,7 @@ const MyBalance = ({ navigation }) => {
                         </Tooltip>
                     </View>
                 </View>
-                {viewHide?<View style={{width:'90%',alignSelf:'center',marginTop:10,flexDirection:'row',borderWidth:0.5,borderColor:'#109E38',borderRadius:4,padding:7}}>
+                {/* {viewHide?<View style={{width:'90%',alignSelf:'center',marginTop:10,flexDirection:'row',borderWidth:0.5,borderColor:'#109E38',borderRadius:4,padding:7}}>
                     <FontAwesomeIcon name="money" size={25} color="#356D0B" />
                     <View style={{width:'85%',alignSelf:'center',paddingHorizontal:5}}>
                         <Text style={{fontSize:10,fontFamily:'SofiaProRegular'}}>Maximum usable Cash Bonus per match = 10% of Entry Fees Know more</Text>
@@ -233,7 +233,7 @@ const MyBalance = ({ navigation }) => {
                     <TouchableOpacity onPress={()=> setViewHide(false)}>
                       <Ionicon name="close" size={22} color="grey" />
                     </TouchableOpacity>    
-                </View>:null}
+                </View>:null} */}
 
             </View>
 

@@ -11,38 +11,38 @@ import Login from './screen/Login';
 // import IntroScreen from './screen/Intro';
 import Home from './screen/Home';
 import MyTests from './screen/MyTests';
-import Saved from './screen/Saved'
+// import Saved from './screen/Saved'
 import { MyContext } from './components/UseContext'
-import Doubt from './screen/Doubt';
-import MyVideoLectures from './screen/MyVideoLectures';
+// import Doubt from './screen/Doubt';
+// import MyVideoLectures from './screen/MyVideoLectures';
 import MyProfile from './screen/MyProfile';
 import BuyVideo from './screen/BuyVideoLecture';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import ViewPackage from './screen/ViewPackage';
-import PayYourFee from './screen/PayYourFee';
+// import PayYourFee from './screen/PayYourFee';
 import SignUp from './screen/SignUp';
-import SelectCourse from './screen/SelectCourse';
-import Passes from './screen/Passes';
-import Checkout from './screen/Checkout';
-import Coupon from './screen/Coupon';
+// import SelectCourse from './screen/SelectCourse';
+// import Passes from './screen/Passes';
+// import Checkout from './screen/Checkout';
+// import Coupon from './screen/Coupon';
 import VideoSolution from './screen/VideoSolution';
 import TopperList from './screen/TopperList';
 import Promo from './screen/Promo';
 import Settings from './screen/Settings'
-import Transaction from './screen/Transaction'
-import Profile from './screen/Profile';
+// import Transaction from './screen/Transaction'
+// import Profile from './screen/Profile';
 import YourExams from './screen/YourExams';
-import SubExams from './screen/SubExams';
+// import SubExams from './screen/SubExams';
 import Account from './screen/Account';
-import ViewSavedQuestion from './screen/ViewSavedQuestion';
+// import ViewSavedQuestion from './screen/ViewSavedQuestion';
 import OrderSummary from './screen/OrderSummary';
-import Exams from './screen/Exams';
-import ExamCategory from './screen/ExamCategory';
-import ViewExamCategory from './screen/ViewExamCategory';
+// import Exams from './screen/Exams';
+// import ExamCategory from './screen/ExamCategory';
+// import ViewExamCategory from './screen/ViewExamCategory';
 import Blog from './screen/Blog';
 import { WebView } from 'react-native-webview'
-import MyDoubts from './screen/MyDoubts';
-import ViewDoubt from './screen/ViewDoubt';
+// import MyDoubts from './screen/MyDoubts';
+// import ViewDoubt from './screen/ViewDoubt';
 import Register from './screen/Register';
 import SignIn from './screen/SignIn';
 import SignInOtp from './screen/SignInOtp';
@@ -52,13 +52,13 @@ import RecentTransactions from './screen/RecentTransactions';
 import ManagePayment from './screen/ManagePayment';
 import AfterLoginOTP from './screen/AfterLoginOTP';
 
-import QuizSection from './screen/QuizSection';
+// import QuizSection from './screen/QuizSection';
 import QuizStart from './screen/QuizStart';
 import BlogPost from './screen/BlogPost';
-import QuizResult from './screen/QuizResult';
-import QuizSolution from './screen/QuizSolution';
+// import QuizResult from './screen/QuizResult';
+// import QuizSolution from './screen/QuizSolution';
 import AllExamReview from './screen/AllExamReview';
-import Feedback from './screen/Feedback';
+// import Feedback from './screen/Feedback';
 import AttemptedQuiz from './screen/AttemptedQuiz';
 import axiosClient from './api/axios-client';
 import ForgotPassword from './screen/ForgotPassword';
@@ -119,7 +119,7 @@ const AppNavigator = () => {
                 {/* <Screen name='VideoSolution' component={VideoSolution} /> */}
                 {/* <Screen name='TopperList' component={TopperList} /> */}
                 {/* <Screen name='Promo' component={Promo} /> */}
-                <Screen name='Profile' component={Profile} />
+                {/* <Screen name='Profile' component={Profile} /> */}
                 {/* <Screen name='YourExams' component={YourExams} /> */}
                 {/* <Screen name='SubExams' component={SubExams} /> */}
                 {/* <Screen name='Account' component={Account} /> */}

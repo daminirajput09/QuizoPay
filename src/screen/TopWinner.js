@@ -25,10 +25,11 @@ const TopWinner = ({ navigation, route }) => {
     const [loader, setLoader] = useState(false);
     const [TopWinners, setTopWinners] = useState([1,2,3,4]);
     const [TopSection, setTopSection] = useState([]);
-    const [barItem, setBarItem] = useState(['first', 'second','third'])//, 'fourth','fixth', 'sixth','seven', 'eight','nine', 'ten']);
+    const [barItem, setBarItem] = useState(['BANK SBI PO', 'BANK SSC','SSC QUIZ'])//, 'fourth','fixth', 'sixth','seven', 'eight','nine', 'ten']);
     
     useEffect(() => {
-        // getWinners();
+        getWinners();
+        getQuizRanks();
         BackHandler.addEventListener('hardwareBackPress', handleBackPress);
 
         return () => {
@@ -36,38 +37,69 @@ const TopWinner = ({ navigation, route }) => {
         }
     }, []);
 
-    // useEffect(() => { getWinners(); }, [isFocused]);
+    useEffect(() => { getWinners(); getQuizRanks(); }, [isFocused]);
 
-    // const getWinners = () => {
+    const getWinners = () => {
         
-    //     if(User && User.id){
-    //       const formData = new FormData();
-    //       formData.append('userid', User.id);
-    //       formData.append('quizkey', quiz_key);
-    //       axiosClient().post('quizzes/getCompletedQuizzes',formData)
-    //       .then((res) => {
-    //         setLoader(false);
-    //         console.log('get winner res',res.data.data, formData);
-    //         if(res.data.Error == 0){
-    //            setTopSection(res.data.data);
-    //         } else if(res.data.Error == 1) {
-    //           Toast.show({
-    //             text1: res.data.message,
-    //             type: 'error',
-    //             position: 'top',
-    //             visibilityTime: 4000,
-    //             autoHide: true,
-    //             topOffset: 0,
-    //             bottomOffset: 40,
-    //             leadingIcon: null,
-    //           });
-    //         }
-    //       }).catch((err) => {
-    //           setLoader(false);
-    //           console.log(err)
-    //       })
-    //     }
-    //   }
+        // if(User && User.id){
+          const formData = new FormData();
+          formData.append('userid', 4); // User.id
+          formData.append('quizkey', ''); // quiz_key
+          axiosClient().post('quizzes/getCompletedQuizzes',formData)
+          .then((res) => {
+            setLoader(false);
+            console.log('get winner res',res.data, formData);
+            if(res.data.Error == 0){
+               setTopSection(res.data.data);
+            } else if(res.data.Error == 1) {
+              Toast.show({
+                text1: res.data.message,
+                type: 'error',
+                position: 'top',
+                visibilityTime: 4000,
+                autoHide: true,
+                topOffset: 0,
+                bottomOffset: 40,
+                leadingIcon: null,
+              });
+            }
+          }).catch((err) => {
+              setLoader(false);
+              console.log(err)
+          })
+        // }
+      }
+
+      const getQuizRanks = () => {
+        // if(User && User.id){
+          const formData = new FormData();
+          formData.append('userid', 11); // User.id
+          formData.append('quizkey', '23ee4f8ba68e8e235d728da6599104222'); // quiz_key
+          axiosClient().post('quizzes/getQuizRanks',formData)
+          .then((res) => {
+            setLoader(false);
+            console.log('getQuizRanks res',res.data, formData);
+            if(res.data.Error == 0){
+               setTopSection(res.data.data);
+            } else if(res.data.Error == 1) {
+              Toast.show({
+                text1: res.data.message,
+                type: 'error',
+                position: 'top',
+                visibilityTime: 4000,
+                autoHide: true,
+                topOffset: 0,
+                bottomOffset: 40,
+                leadingIcon: null,
+              });
+            }
+          }).catch((err) => {
+              setLoader(false);
+              console.log(err)
+          })
+        // }
+      }
+
 
     const handleBackPress = () => {
         navigation.goBack();
@@ -159,7 +191,7 @@ const TopWinner = ({ navigation, route }) => {
                                 </View>
                             </View>
                             <View style={{width:'15%',alignItems:'center'}}>
-                                <Text style={[styles.headBottom,{fontWeight:'bold'}]}>{'1000'}</Text>
+                                <Text style={[styles.headBottom,{fontWeight:'bold'}]}>{'₹1000'}</Text>
                             </View>
                         </View>
                     <View style={{width:'100%',height:1,backgroundColor:'lightgrey'}} />
@@ -195,6 +227,7 @@ const TopWinner = ({ navigation, route }) => {
 
                 <View style={{backgroundColor:'#4782F5',width:'100%',height:54,position:'absolute',top:50}} />
 
+                {/* {TopSection && TopSection.length>0 ? */}
                 <TopTabBar.Navigator
                     tabBarOptions={{
                         scrollEnabled: true,
@@ -230,6 +263,7 @@ const TopWinner = ({ navigation, route }) => {
                         <TopTabBar.Screen key={i} name={item} component={Route} />
                     ))}
                 </TopTabBar.Navigator>
+                {/* :null} */}
                 {/* <TopTabBar.Screen name="16 - 22 MAR" component={Route} />
                 <TopTabBar.Screen name="9 - 15 MAR" component={Route} /> */}
         </View>
@@ -277,5 +311,9 @@ const styles = StyleSheet.create({
     },
     emptyRowBtnText: {fontWeight: 'bold', fontSize: 12, color: '#fff'},
   
-    headBottom: {color:'#000',fontFamily:'SofiaProRegular',textTransform:'uppercase'},
+    headBottom: {
+        color:'#000',
+        fontFamily:'SofiaProRegular',
+        textTransform: 'capitalize'
+    },
 });

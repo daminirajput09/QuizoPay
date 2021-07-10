@@ -50,7 +50,7 @@ const Home = ({ navigation, route }) => {
 
     const isFocused = useIsFocused();
     const [sliderImages, setSliderImages] = useState([])
-    const [loader, setLoader] = useState(true);
+    const [loader, setLoader] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [testSeries, setTestSeries] = useState([]);
     const [quizList, setQuizList] = useState([]);
@@ -73,6 +73,7 @@ const Home = ({ navigation, route }) => {
 
     const [enableBtn, setEnableBtn] = useState(false);
 
+    const [modal1, setModal1] = useState(false);
     const [option, setOption] = useState([
         {id: 1, icon: 'wallet', label: 'Transactional', subText: 'Updates on your withdrawals, added cash, etc.'},
         {id: 2, icon: 'gift', label: 'Promotional', subText: 'Updates on your offers, disocunts, etc.'},
@@ -163,7 +164,6 @@ const Home = ({ navigation, route }) => {
     }, [isFocused]);
 
     const onRefresh = useCallback(() => {
-        setLoader(true);
         imageSlider();
         getUpcomingQuizList();
         getFilterData();
@@ -233,7 +233,7 @@ const Home = ({ navigation, route }) => {
     }
 
     const getUpcomingQuizList = (param) => {
-        
+        setLoader(true);
     //   console.log('params', param, courseId);
 
       if(UserInfo && UserInfo.id){  
@@ -246,11 +246,12 @@ const Home = ({ navigation, route }) => {
 
         axiosClient().post('quizzes/get', formData)
             .then(async (res) => {
-                setLoader(false); 
-                //console.log('get quizzes res', res.data.data, formData)
+                console.log('get quizzes res', res.data.data, formData)
                 if (res.data.Error == 0) {
+                    setLoader(false);
                     setHomeSection(res.data.data);
                 } else if(res.data.Error == 1) {
+                    setLoader(false);
                     Toast.show({
                         text1: res.data.message,
                         type: 'error',
@@ -266,7 +267,7 @@ const Home = ({ navigation, route }) => {
                 setLoader(false); 
                 console.log('get quizzes', err)
             })
-       }     
+       } else { setLoader(false); }  
     }
 
     const getFilterData = () => {
@@ -394,7 +395,10 @@ const Home = ({ navigation, route }) => {
                         <View style={styles.headerBar}>
                             <TouchableOpacity
                                 style={{marginHorizontal:5}}
-                                onPress={() => navigation.navigate('Notifications')}>
+                                onPress={() =>
+                                    // setModal1(true) 
+                                    navigation.navigate('Notifications')
+                                }>
                                 <Image style={{width:20,height:20}} source={require('../../assets/bell.png')} />
                                 {Count && Count != 0 && <View style={styles.notiView}>
                                     <Text style={[styles.notiCount,styles.SofiaFont]}>{Number(Count)}</Text>
@@ -506,7 +510,7 @@ const Home = ({ navigation, route }) => {
                                     </Tooltip>                                
                                 </View>
                             </View>
-                            {viewHide?
+                            {/* {viewHide?
                             <View style={{width:'90%',alignSelf:'center',marginTop:10,flexDirection:'row',borderWidth:0.5,borderColor:'#109E38',borderRadius:4,padding:7}}>
                                 <FontAwesomeIcon name="money" size={25} color="#356D0B" />
                                 <View style={{width:'85%',alignSelf:'center',paddingHorizontal:5}}>
@@ -515,7 +519,7 @@ const Home = ({ navigation, route }) => {
                                 <TouchableOpacity onPress={()=> setViewHide(false)}>
                                   <Ionicon name="close" size={22} color="grey" />
                                 </TouchableOpacity>
-                            </View>:null}
+                            </View>:null} */}
                             <TouchableOpacity style={{alignSelf:'center',marginTop:10}} onPress={() => {setWalletModal(false); setViewHide(true)}}>
                                 <Ionicon name="chevron-up" size={30} color="grey" />
                             </TouchableOpacity>
@@ -563,7 +567,7 @@ const Home = ({ navigation, route }) => {
                                 // console.log('date remain', expDate.diff(nowDate, 'days'));
                                 return(
                                 <View key={i}>
-                                {QuizEnd == true ? null : 
+                                {/* {QuizEnd == true ? null :  */}
                                 <QuizModal 
                                     width={'95%'}
                                     item={item}
@@ -586,7 +590,8 @@ const Home = ({ navigation, route }) => {
                                     //         setCurrentTime(until);
                                     //     }
                                     // }}
-                                />}
+                                />
+                                {/* } */}
                             </View>
                                 )}) : <EmptyScreen />}
                         </ScrollView>
@@ -801,13 +806,14 @@ const Home = ({ navigation, route }) => {
                 </Modal>
 
                 <ModalComponent 
+                    navigation={navigation}
                     userId={UserInfo && UserInfo.id}
                     quizKey={QuizItem && QuizItem.key}
                     countdownModal={countdownModal}
                     QuizItem={QuizItem}
                     CurrentTime={CurrentTime}
-                    Language={Language}
-                    onClosed={() => { setCountdownModal(false); setCurrentTime(0); } }
+                    Language={Language && Language}
+                    onClosed={() => { setCountdownModal(false); setCurrentTime(0); setLanguage(); } }
                     onValueChange={(itemValue, itemIndex) =>
                         setLanguage(itemValue)
                     }
@@ -827,6 +833,32 @@ const Home = ({ navigation, route }) => {
                     //     })
                     // }
                 />
+
+            <Modal
+              style={{width: '80%',height: 150,borderTopLeftRadius:10,borderRadius:10,backgroundColor:'#fff'}}
+              swipeToClose={true}
+              swipeArea={10}
+              swipeThreshold={50}
+              isOpen={modal1}
+              backdropOpacity={0.5}
+              entry={'top'}
+              backdropPressToClose={true}
+              position={'center'}
+              backdropColor={'#000'}
+              coverScreen={true}
+              backdropPressToClose={false}>
+              <View style={{flex:1,alignItems:'center',padding:15}}>
+                  <View style={{marginVertical:15}}>
+                    <Text style={{color:'#000',fontSize:17,fontFamily:'GilroyMedium'}}>
+                        Quiz Submitted successfully!
+                    </Text>
+                    <TouchableOpacity onPress={()=> setModal1(false) } 
+                        style={[styles.AddBtn]}>
+                        <Text style={[styles.button,styles.SofiaFont]}>{'Okay'}</Text>
+                    </TouchableOpacity>
+                  </View>
+              </View>
+            </Modal>
 
                 <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
 

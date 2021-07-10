@@ -37,6 +37,7 @@ const ModalComponent = props => {
                 const nowDate = moment(new Date());//res.data.data.currentdate); // new moment -> today 
                 const diff = expDate.diff(nowDate, 'seconds'); // returns 366 
                 setDifference(diff);
+                console.log('diff in popup', diff);
           }
         }).catch((err) => {
             console.log(err)
@@ -48,7 +49,7 @@ const ModalComponent = props => {
       style={{
         width: '100%',
         top: 5,
-        height: 350,
+        height: 510,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         backgroundColor: '#F3F3F3',
@@ -67,25 +68,43 @@ const ModalComponent = props => {
       onClosed={props.onClosed}>
       <View>
         <View style={[styles.filterView, {flexDirection: 'column'}]}>
-          <Text style={{fontSize: 16, fontFamily: 'SofiaProRegular'}}>
+          <Text style={{fontSize: 16, fontFamily: 'SofiaProRegular',marginBottom:10}}>
             Today's Quiz on
           </Text>
-          <Text style={{fontSize: 20, fontFamily: 'GilroyBold', marginTop: 5}}>
+          <Text style={{fontSize: 20, fontFamily: 'GilroyBold', marginVertical: 7}}>
             {props.QuizItem.name}
           </Text>
-          <Text
+          <Text style={{fontSize: 16, fontFamily: 'SofiaProRegular', marginVertical: 7}}>
+            {'Time : ' + props.QuizItem.questiontime + ' seconds'}
+          </Text>
+          <Text style={{fontSize: 16, fontFamily: 'SofiaProRegular', marginVertical: 7}}>
+            {'Entry Fee : ₹' + props.QuizItem.entryfee}
+          </Text>
+          <Text style={{fontSize: 14, fontFamily: 'SofiaProRegular', marginVertical: 7,fontWeight:'bold',color:'#3366BB'}}>
+            {'See Distribution plan'}
+          </Text>
+
+        </View>
+
+        {/* {(props.item.buffertime * 60) > 0 ?
+          <View> */}
+
+        {buffertime * 60 > 0 ?
+        <View style={{width: '100%', marginVertical: 10,alignItems:'flex-start'}}>
+
+        <Text
             style={{
               fontSize: 14,
               fontFamily: 'SofiaProRegular',
-              marginTop: 10,
+              marginVertical: 10,
+              marginLeft:15
             }}>
             This Quiz starts in
           </Text>
-        </View>
-        <View style={{width: '100%', flexDirection: 'row', marginVertical: 10}}>
+
           {moment(props.QuizItem.startdate).diff(moment(new Date()), 'days') > 0 ? (
             <CountDown
-              until={difference == 0 ? buffertime * 60 : difference} //props.CurrentTime}
+              until={difference <= 0 ? buffertime * 60 : difference} //props.CurrentTime}
               // until={diff == 0 ? item.buffertime*60 : diff}//(item.duration)*60}
               onFinish={props.onFinish}
               // onFinish={() => alert('finished')}
@@ -107,7 +126,7 @@ const ModalComponent = props => {
             />
           ) : (
             <CountDown
-              until={difference == 0 ? buffertime * 60 : difference}
+              until={difference <= 0 ? buffertime * 60 : difference}
               // until={diff == 0 ? item.buffertime*60 : diff}//(item.duration)*60}
               onFinish={() => {
                 //console.log('quiz time finish');
@@ -131,6 +150,19 @@ const ModalComponent = props => {
             />
           )}
         </View>
+        :
+        <View>
+          <Text
+            style={{
+              fontSize: 25,
+              fontFamily: 'GilroyBold',
+              marginVertical: 10,
+              marginLeft:15,
+              textAlign:'center'
+            }}>
+            Quiz time is over
+          </Text>
+        </View>}
 
         {props.QuizItem && props.QuizItem.language && props.QuizItem.language.length > 0 ? (
           <View
@@ -191,12 +223,15 @@ const ModalComponent = props => {
 
         <TouchableOpacity
           activeOpacity={1}
-          onPress={props.onPress}
-          // onPress={()=> CurrentTime == 0? navigation.navigate('JoinQuiz',{userId: UserInfo.id ,item: QuizItem}) : null }
+          // onPress={props.onPress}
+          onPress={()=> 
+            difference <= 0? props.onPress : null
+            // props.navigation.navigate('MyTests',{userid: props.userId ,quiz_key: props.quizKey}) 
+          }
           style={[
             styles.ApplyBtn,
             {
-              backgroundColor: difference == 0 ? '#009D38' : '#D8D9D8',
+              backgroundColor: difference <= 0 ? '#009D38' : '#D8D9D8',
               marginBottom: 30,
               marginTop: 30,
             },
