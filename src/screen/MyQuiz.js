@@ -9,7 +9,7 @@ import {
   StatusBar,
   Image,
   Dimensions,
-  ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -33,12 +33,13 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Tooltip } from 'react-native-elements';
 import QuizModal from '../components/QuizModal';
 import ModalComponent from '../components/ModalComponent';
+import Modal from 'react-native-modal';
 
 const MyQuiz = ({navigation, route}) => {
   const Tab = createMaterialTopTabNavigator();
 
   const isFocused = useIsFocused();
-  const [loader, setLoader] = useState(true);
+  const [loader, setLoader] = useState(false);
   const [LiveQuiz, setLiveQuiz] = useState([]);
   const [UpcomingQuiz, setUpcomingQuiz] = useState([]);
   const [User, setUser] = useState();
@@ -47,6 +48,7 @@ const MyQuiz = ({navigation, route}) => {
   const [CurrentTime, setCurrentTime] = useState(0);
   const [Language, setLanguage] = useState();
   const [enableBtn, setEnableBtn] = useState(false);
+  const [Balance, setBalance] = useState(0);
 
   const successIcon = require('../../assets/close.png');
 
@@ -86,13 +88,19 @@ const MyQuiz = ({navigation, route}) => {
   },[]);
 
   useEffect(() => {
-    getUser();
+    // getUser();
+    if(User){
+      setLoader(true);
+      getLiveQuiz();
+      getUpComingQuiz(); 
+      WalletBalance(); 
+    }
   }, [isFocused]);
 
-  useEffect(() => {
-    getLiveQuiz();
-    getUpComingQuiz();
-  }, [User]);
+  // useEffect(() => {
+  //   getLiveQuiz();
+  //   getUpComingQuiz();
+  // }, [User]);
 
   const getUser = async () => {
     await AsyncStorage.getItem('userInfo', async(err, result) => {
@@ -114,10 +122,11 @@ const MyQuiz = ({navigation, route}) => {
       axiosClient().post('quizzes/getMyQuizzes',formData)
       .then((res) => {
         setLoader(false);
-        //console.log('get live quiz res',res.data.data, formData);
+        console.log('get live quiz res',res.data, formData);
         if(res.data.Error == 0){
           setLiveQuiz(res.data.data);
         } else if(res.data.Error == 1) {
+          setLiveQuiz([]);
           Toast.show({
             text1: res.data.message,
             type: 'error',
@@ -131,6 +140,7 @@ const MyQuiz = ({navigation, route}) => {
         }
       }).catch((err) => {
           setLoader(false);
+          setLiveQuiz([]);
           //console.log(err)
       })
     }
@@ -167,13 +177,52 @@ const MyQuiz = ({navigation, route}) => {
     }  
   }
 
+  const WalletBalance = () => {
+    if(User && User.id){
+    const formData = new FormData();
+    formData.append('userid', User.id);
+    axiosClient().post('wallet/getBalance', formData)
+        .then(async (res) => {
+          console.log('get balance', res.data);
+            if (res.data.Error == 0) {
+                setBalance(res.data.balance);
+            } else if(res.data.Error == 1) {
+                Toast.show({
+                    text1: res.data.message,
+                    type: 'error',
+                    position: 'top',
+                    visibilityTime: 4000,
+                    autoHide: true,
+                    topOffset: 0,
+                    bottomOffset: 40,
+                    leadingIcon: null
+                });
+            }
+        }).catch((err) => {
+            console.log('get Balance', err)
+        })
+    } else {
+        Toast.show({
+            text1: 'User Id not found!',
+            type: 'error',
+            position: 'top',
+            visibilityTime: 4000,
+            autoHide: true,
+            topOffset: 0,
+            bottomOffset: 40,
+            leadingIcon: null
+        });
+    }    
+  }
+
   const FirstRoute = () => (
       <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
         
         <ScrollView
           showsHorizontalScrollIndicator={false}
           style={{marginVertical: 10}}>
-          {LiveQuiz && LiveQuiz.length>0 && LiveQuiz.map((item, i) => {
+          {/* {LiveQuiz && LiveQuiz.length>0 &&  */}
+          {LiveQuiz.map((item, i) => {
             const expDate = moment(item.startdate); // create moment from string with format 
             const nowDate = moment(new Date()); // new moment -> today 
             const diff = expDate.diff(nowDate, 'seconds'); // returns 366 
@@ -256,9 +305,9 @@ const MyQuiz = ({navigation, route}) => {
 
   return (
     <View style={{flex: 1}}>
-      {loader ? (
+      {/* {loader ? (
         <Loader isLoading={loader} />
-      ) : (
+      ) : ( */}
         <View style={{flex: 1}}>
 
           <AppHeader
@@ -300,6 +349,13 @@ const MyQuiz = ({navigation, route}) => {
             <Tab.Screen name="Completed" component={UpcomingQuiz && UpcomingQuiz.length>0? SecondRoute : EmptyScreen } />
           </Tab.Navigator>
 
+          {loader ? (
+            // <Loader isLoading={loader} />
+            <Modal isVisible={loader} style={{flex: 1,justifyContent:'center',alignItems:'center'}}>
+                <ActivityIndicator color={"#A9A9A9"} size={'large'} />
+            </Modal>
+          ) : (
+
           <ModalComponent 
               userId={User && User.id}
               quizKey={QuizItem && QuizItem.key}
@@ -308,6 +364,7 @@ const MyQuiz = ({navigation, route}) => {
               CurrentTime={CurrentTime}
               Language={Language}
               onClosed={() => { setCountdownModal(false); setCurrentTime(0); } }
+              distributionPlan={() => navigation.navigate('JoinQuiz', {userId: User.id, item: QuizItem, Amount:Balance}) }
               onValueChange={(itemValue, itemIndex) =>
                   setLanguage(itemValue)
               }
@@ -322,14 +379,14 @@ const MyQuiz = ({navigation, route}) => {
                   // CurrentTime == 0
                   enableBtn
                   ? 
-                  navigation.navigate('MyTests', { userid: UserInfo.id, quiz_key: QuizItem.key, })
+                  navigation.navigate('MyTests', { userid: User.id, quiz_key: QuizItem.key, })
                   : 
                   null 
               }
           />
+          )}
 
         </View>
-      )}
 
 
       <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />

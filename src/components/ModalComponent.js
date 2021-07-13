@@ -32,12 +32,17 @@ const ModalComponent = props => {
         .then((res) => {
           //console.log('get -> Quiz -> Start -> time',res.data.data);
           if (res.data.Error === 0) {
-                setBuffertime(res.data.data.buffertime);
+                // setBuffertime(res.data.data.buffertime);
                 const expDate = moment(res.data.data.startdate); // create moment from string with format 
                 const nowDate = moment(new Date());//res.data.data.currentdate); // new moment -> today 
+                const buffer = moment(res.data.data.buffertime); // create moment from string with format 
+
                 const diff = expDate.diff(nowDate, 'seconds'); // returns 366 
+                const bufferDiff = buffer.diff(nowDate, 'seconds'); // returns 366 
+
                 setDifference(diff);
-                console.log('diff in popup', diff);
+                console.log('buffer diff in popup', bufferDiff);
+                setBuffertime(bufferDiff);
           }
         }).catch((err) => {
             console.log(err)
@@ -65,7 +70,8 @@ const ModalComponent = props => {
       position={'bottom'}
       backdropColor={'#000'}
       coverScreen={true}
-      onClosed={props.onClosed}>
+      onClosed={props.onClosed}
+      backButtonClose={true}>
       <View>
         <View style={[styles.filterView, {flexDirection: 'column'}]}>
           <Text style={{fontSize: 16, fontFamily: 'SofiaProRegular',marginBottom:10}}>
@@ -80,16 +86,18 @@ const ModalComponent = props => {
           <Text style={{fontSize: 16, fontFamily: 'SofiaProRegular', marginVertical: 7}}>
             {'Entry Fee : ₹' + props.QuizItem.entryfee}
           </Text>
-          <Text style={{fontSize: 14, fontFamily: 'SofiaProRegular', marginVertical: 7,fontWeight:'bold',color:'#3366BB'}}>
-            {'See Distribution plan'}
-          </Text>
+          <TouchableOpacity onPress={props.distributionPlan}> 
+            <Text style={{fontSize: 14, fontFamily: 'SofiaProRegular', marginVertical: 7,fontWeight:'bold',color:'#3366BB'}}>
+              {'See Distribution plan'}
+            </Text>
+          </TouchableOpacity>
 
         </View>
 
         {/* {(props.item.buffertime * 60) > 0 ?
           <View> */}
 
-        {buffertime * 60 > 0 ?
+        {difference > 0 ? //&& buffertime > 0 ?
         <View style={{width: '100%', marginVertical: 10,alignItems:'flex-start'}}>
 
         <Text
@@ -104,7 +112,7 @@ const ModalComponent = props => {
 
           {moment(props.QuizItem.startdate).diff(moment(new Date()), 'days') > 0 ? (
             <CountDown
-              until={difference <= 0 ? buffertime * 60 : difference} //props.CurrentTime}
+              until={difference} //difference <= 0 ? buffertime * 60 : difference
               // until={diff == 0 ? item.buffertime*60 : diff}//(item.duration)*60}
               onFinish={props.onFinish}
               // onFinish={() => alert('finished')}
@@ -126,11 +134,11 @@ const ModalComponent = props => {
             />
           ) : (
             <CountDown
-              until={difference <= 0 ? buffertime * 60 : difference}
+              until={difference} //difference <= 0 ? buffertime * 60 : 
               // until={diff == 0 ? item.buffertime*60 : diff}//(item.duration)*60}
-              onFinish={() => {
+              onFinish={props.onFinish}
                 //console.log('quiz time finish');
-              }}
+              // }}
               // onFinish={() => alert('finished')}
               size={12}
               timeToShow={['H', 'M', 'S']}
@@ -154,9 +162,9 @@ const ModalComponent = props => {
         <View>
           <Text
             style={{
-              fontSize: 25,
+              fontSize: 30,
               fontFamily: 'GilroyBold',
-              marginVertical: 10,
+              marginVertical: 25,
               marginLeft:15,
               textAlign:'center'
             }}>
@@ -181,18 +189,20 @@ const ModalComponent = props => {
                 borderColor: '#C0C0C0',
                 height: 30,
               }}>
-              <Picker
-                selectedValue={props.Language}
-                style={{height: 30, bottom: 12}}
-                mode={'dropdown'}
-                onValueChange={props.onValueChange}>
-                {props.QuizItem &&
-                  props.QuizItem.language &&
-                  props.QuizItem.language.length > 0 &&
-                  props.QuizItem.language.map((item, i) => (
-                    <Picker.Item key={i} label={item} value={item} />
-                  ))}
-              </Picker>
+              {props.QuizItem &&
+                props.QuizItem.language &&
+                props.QuizItem.language.length > 0 ? 
+                <Picker
+                  selectedValue={props.Language}
+                  style={{height: 30, bottom: 12}}
+                  mode={'dropdown'}
+                  onValueChange={props.onValueChange}>
+                    {props.QuizItem.language.map((item, i) => (
+                      <Picker.Item key={i} label={item} value={item.toString()} />
+                    ))}
+                </Picker>
+              : null}  
+              <Text style={{width: '100%', height: 60, position: 'absolute', bottom: 0, left: 0}}>{' '}</Text>
             </View>
           </View>
         ) : (
@@ -222,10 +232,9 @@ const ModalComponent = props => {
         )}
 
         <TouchableOpacity
-          activeOpacity={1}
+          activeOpacity={difference >= 0 ? 1 :0.5} //difference <= 0?0.5:1}
           // onPress={props.onPress}
-          onPress={()=> 
-            difference <= 0? props.onPress : null
+          onPress={difference >= 0 ? null : props.onPress 
             // props.navigation.navigate('MyTests',{userid: props.userId ,quiz_key: props.quizKey}) 
           }
           style={[

@@ -24,12 +24,13 @@ const TopWinner = ({ navigation, route }) => {
     // const [ActiveContest, setActiveContest] = useState('6lakh')
     const [loader, setLoader] = useState(false);
     const [TopWinners, setTopWinners] = useState([1,2,3,4]);
-    const [TopSection, setTopSection] = useState([]);
-    const [barItem, setBarItem] = useState(['BANK SBI PO', 'BANK SSC','SSC QUIZ'])//, 'fourth','fixth', 'sixth','seven', 'eight','nine', 'ten']);
+    const [UserId, setUserId] = useState();
+    const [barItem, setBarItem] = useState([]);
+    const [activeBar, setActiveBar] = useState(0);
+    const [QuizRank, setQuizRank] = useState([1,2,3,4]);
     
     useEffect(() => {
         getWinners();
-        getQuizRanks();
         BackHandler.addEventListener('hardwareBackPress', handleBackPress);
 
         return () => {
@@ -37,20 +38,28 @@ const TopWinner = ({ navigation, route }) => {
         }
     }, []);
 
-    useEffect(() => { getWinners(); getQuizRanks(); }, [isFocused]);
+    useEffect(() => { getWinners(); }, [isFocused]);
 
     const getWinners = () => {
         
+        AsyncStorage.getItem('userInfo').then(user => {
+
+        let userInfo = JSON.parse(user);
+
+        console.log('user id is', userInfo.id);
+        setUserId(userInfo.id);
+
         // if(User && User.id){
           const formData = new FormData();
-          formData.append('userid', 4); // User.id
+          formData.append('userid', userInfo && userInfo.id); // User.id
           formData.append('quizkey', ''); // quiz_key
           axiosClient().post('quizzes/getCompletedQuizzes',formData)
           .then((res) => {
             setLoader(false);
             console.log('get winner res',res.data, formData);
             if(res.data.Error == 0){
-               setTopSection(res.data.data);
+                setBarItem(res.data.data);
+                getQuizRanks(0);
             } else if(res.data.Error == 1) {
               Toast.show({
                 text1: res.data.message,
@@ -68,19 +77,26 @@ const TopWinner = ({ navigation, route }) => {
               console.log(err)
           })
         // }
-      }
 
-      const getQuizRanks = () => {
+      }).catch(e => console.log(e))
+
+    }
+
+      const getQuizRanks = (param) => {
         // if(User && User.id){
+
+        let key = barItem[param].key;
+        console.log('key in rank', key, barItem[param]);
+
           const formData = new FormData();
-          formData.append('userid', 11); // User.id
-          formData.append('quizkey', '23ee4f8ba68e8e235d728da6599104222'); // quiz_key
+          formData.append('userid', UserId); // User.id
+          formData.append('quizkey', key); // quiz_key
           axiosClient().post('quizzes/getQuizRanks',formData)
           .then((res) => {
             setLoader(false);
             console.log('getQuizRanks res',res.data, formData);
             if(res.data.Error == 0){
-               setTopSection(res.data.data);
+               setQuizRank(res.data.data);
             } else if(res.data.Error == 1) {
               Toast.show({
                 text1: res.data.message,
@@ -225,10 +241,10 @@ const TopWinner = ({ navigation, route }) => {
                 </View>
 
 
-                <View style={{backgroundColor:'#4782F5',width:'100%',height:54,position:'absolute',top:50}} />
+                <View style={{backgroundColor:'#4782F5',width:'100%',height:100,position:'absolute',top:45}} />
 
                 {/* {TopSection && TopSection.length>0 ? */}
-                <TopTabBar.Navigator
+                {/* <TopTabBar.Navigator
                     tabBarOptions={{
                         scrollEnabled: true,
                         activeTintColor: '#4782F5',
@@ -238,7 +254,7 @@ const TopWinner = ({ navigation, route }) => {
                             height: 47,
                             top: 1,
                             borderRadius:8,
-                            width: 120,
+                            width: 115,
                         }, //transparent
                         labelStyle: {
                             fontSize: 13,
@@ -246,7 +262,7 @@ const TopWinner = ({ navigation, route }) => {
                             fontFamily: 'GilroyMedium',
                         },
                         tabStyle: {
-                            width: 120,
+                            width: 115,
                         },
                         style: {
                             height: 50,
@@ -262,10 +278,52 @@ const TopWinner = ({ navigation, route }) => {
                     {barItem.map((item, i) => (
                         <TopTabBar.Screen key={i} name={item} component={Route} />
                     ))}
-                </TopTabBar.Navigator>
+                </TopTabBar.Navigator> */}
                 {/* :null} */}
                 {/* <TopTabBar.Screen name="16 - 22 MAR" component={Route} />
                 <TopTabBar.Screen name="9 - 15 MAR" component={Route} /> */}
+
+                <View style={{
+                    width:'95%',
+                    alignSelf:'center',
+                    marginTop: 25,
+                    top: -10,
+                    backgroundColor:'#476EDC',
+                    // height: 47,
+                    borderRadius:10,
+                    // top: 1,
+                    borderWidth:1,
+                    borderColor:'#fff',
+                    padding:1.5,
+                    zIndex:1
+                }}>
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}>
+                        {barItem && barItem.length>0 ? barItem.map((item, i) => (
+                            <TouchableOpacity
+                                key={i}
+                                activeOpacity={0.5}
+                                style={{
+                                    width: 113,
+                                    height: 50,
+                                    backgroundColor: '#fff',
+                                    // borderRightWidth:0.2,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    backgroundColor: i == activeBar ? '#fff' : '#476EDC',
+                                    borderRadius:10
+                                }} onPress={()=> { setActiveBar(i); getQuizRanks(i); } }>
+                                <Text style={{ color: i == activeBar ? '#476EDC' : '#fff', fontWeight: 'bold',fontSize:14 }}>
+                                    {item.name}
+                                </Text>
+                            </TouchableOpacity>
+                        )): null }
+                    </ScrollView>
+                </View>
+
+                <Route />
+
         </View>
         )}
         </View>

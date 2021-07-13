@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Quizo</string>
+    <string name="app_name">Quizophy</string>
     <string name="facebook_app_id">1:309964270624:android:d8c4913b04bd4cdb0ca045</string>
     <string name="fb_login_protocol_scheme">fb1:309964270624:android:d8c4913b04bd4cdb0ca045</string>
 </resources>

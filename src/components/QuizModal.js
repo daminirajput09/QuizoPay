@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   TouchableOpacity,
   StyleSheet,
@@ -15,15 +15,36 @@ import { Tooltip } from 'react-native-elements';
 import moment from 'moment';
 
 const QuizModal = (props) => {
-  console.log('props.diff', props.diff);
+
+  const [ AllTime, setAllTime ] = useState(0); 
+  const [ buffer, setBuffer ] = useState(0); 
+
+  useEffect(()=>{
+    
+    const expDate = moment(props.item.startdate);
+    const nowDate = moment(new Date()); 
+    const buffer = moment(props.item.buffertime); 
+
+    const diff = expDate.diff(nowDate, 'seconds');
+    const bufferDiff = buffer.diff(nowDate, 'seconds');
+
+    setAllTime(diff);
+    setBuffer(bufferDiff);
+    // console.log('buffer diff in quiz section', bufferDiff);
+
+  },[props.item]);
+
   return (
+    AllTime <= 0 && buffer <= 0 ? null :
     <View style={[styles.homeSectionView,{width:props.width}]}>
       <TouchableOpacity
         activeOpacity={0.5}
         onPress={props.onPress}
         style={{width: '100%', alignItems: 'center', alignSelf: 'center'}}>
-        <View style={styles.firstRow}>
-          <Text style={styles.firstRowText}>{props.item.name}</Text>
+        <View style={[styles.firstRow,{height:32}]}>
+          <View style={{width:'30%'}}>
+            <Text style={[styles.firstRowText]}>{props.item.name}</Text>
+          </View>
           {props.diff <= 0 && (
             <View
               style={[
@@ -43,9 +64,10 @@ const QuizModal = (props) => {
           )}
           <View
             style={{
+              width:'40%',
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'center',
+              justifyContent: 'flex-end',
             }}>
             <EntypoIcon
               name="stopwatch"
@@ -53,14 +75,15 @@ const QuizModal = (props) => {
               color="#000"
               style={{marginTop: 1, marginRight: 2}}
             />
-            {props.expDate.diff(props.nowDate, 'days')>0 || props.notShow?
+            {/* {props.expDate.diff(props.nowDate, 'days') <= 0 || props.notShow? */}
+            {props.diff <= 0 || props.notShow ? 
                 // props.notShow?
                 <Text style={[styles.thirdRowText,{marginTop:2.5}]}>{moment(props.item.startdate).format('DD MMMM YYYY, h:mm:ss a')}</Text>
                 // :
                 // <Text style={[styles.thirdRowText,{marginTop:2.5}]}>{moment(props.item.startdate).format('DD MMMM YYYY')}</Text>
             :
             <CountDown
-              until={props.diff <= 0 ? props.diff+props.item.buffertime * 60 : props.diff} //(item.duration)*60}
+              until={props.diff} // <= 0 ? props.diff+props.item.buffertime * 60 : props.diff} //(item.duration)*60}
               onFinish={props.onFinish}
               // onPress={(time) => console.log('hello',time)}
               // onChange={props.onChange}
@@ -73,10 +96,17 @@ const QuizModal = (props) => {
             />}
           </View>
         </View>
-        <View style={styles.secondRow}>
+        <View style={[styles.secondRow]}>
           <Text style={styles.secondRowText}>
             {props.item.totalspots + ' Total spots'}
           </Text>
+
+          {/* {props.expDate.diff(props.nowDate, 'days') >0 ? null : */}
+          {props.item.join_id == null ? null :
+            <Text style={[styles.secondRowText,{fontSize:10,color:'#6DBD5B',fontFamily:'GilroyBold',borderWidth:1,padding:2,borderColor:'#6DBD5B',borderRadius:4}]}>
+                Joined
+            </Text>}
+
           <View style={styles.secondRowColumn}>
             <Text style={[styles.secondRowColumnText, {marginRight: 5}]}>
               <Ionicon

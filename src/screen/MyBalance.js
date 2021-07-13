@@ -142,7 +142,7 @@ const MyBalance = ({ navigation }) => {
                         <FontAwesomeIcon name='rupee' size={16} color='#000' style={{marginTop:12}} />
                         <Text style={[styles.walletModalText,{marginTop:10,fontFamily:'SofiaProRegular'}]}>0</Text>
                     </View>
-                    <TouchableOpacity onPress={()=>navigation.navigate('AddCash', {Balance: Balance})} 
+                    <TouchableOpacity onPress={()=>navigation.navigate('AddCash', {userId:UserInfo.id ,Balance: Balance})} 
                         style={{width:100,alignSelf:'center',height:40,marginTop:5,justifyContent:'center',alignItems:'center',borderRadius:4,backgroundColor:'#109E38'}}>
                         <Text style={{ fontSize: 14, color: '#fff',borderRadius:5,fontWeight:'bold',fontFamily:'GilroyMedium'}}>{'ADD CASH'}</Text>
                     </TouchableOpacity>

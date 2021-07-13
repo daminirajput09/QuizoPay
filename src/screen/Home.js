@@ -13,6 +13,7 @@ import {
     Linking,
     Share,
     Image,
+    ActivityIndicator
 } from 'react-native';
 import axiosClient from '../api/axios-client';
 import { useIsFocused } from '@react-navigation/native';
@@ -51,6 +52,7 @@ const Home = ({ navigation, route }) => {
     const isFocused = useIsFocused();
     const [sliderImages, setSliderImages] = useState([])
     const [loader, setLoader] = useState(false);
+    const [QuizLoader, setQuizLoader] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [testSeries, setTestSeries] = useState([]);
     const [quizList, setQuizList] = useState([]);
@@ -73,6 +75,9 @@ const Home = ({ navigation, route }) => {
 
     const [enableBtn, setEnableBtn] = useState(false);
 
+    const [activeBar, setActiveBar] = useState('all');
+    const [topTabBar, setTopTabBar] = useState(['All']);
+
     const [modal1, setModal1] = useState(false);
     const [option, setOption] = useState([
         {id: 1, icon: 'wallet', label: 'Transactional', subText: 'Updates on your withdrawals, added cash, etc.'},
@@ -81,6 +86,8 @@ const Home = ({ navigation, route }) => {
         {id: 4, icon: 'group', label: 'Social', subText: 'Updates on posts, groups, followers, etc.'},
         {id: 5, icon: 'user', label: 'Profile', subText: 'Updates on your level, account, etc.'},
     ]);
+
+    // const topTabBar = ['SSC', 'BANKING', 'PO','SSC 1', 'PO 1','BANK 1','SSC 2']
 
     const successIcon = require('../../assets/close.png');
 
@@ -167,7 +174,7 @@ const Home = ({ navigation, route }) => {
         imageSlider();
         getUpcomingQuizList();
         getFilterData();
-    }, [FcmToken]);
+    }, [FcmToken, UserInfo]);
 
     const getFcmToken = async () => {
         await AsyncStorage.getItem('fcmtoken', async(err, result) => {
@@ -221,20 +228,24 @@ const Home = ({ navigation, route }) => {
     };
 
     const imageSlider = () => {
+        setLoader(true);
         axiosClient().post('slider/get')
             .then((res) => {
+                setLoader(false);
                 if (res.data.Error === 0) {
                     setSliderImages(res.data.data)
                     //console.log('slider images',res.data.data);
                 }
             }).catch((err) => {
+                setLoader(false);
                 console.log(err)
             })
     }
 
     const getUpcomingQuizList = (param) => {
-        setLoader(true);
-    //   console.log('params', param, courseId);
+        // setLoader(true);
+        setQuizLoader(true);
+        //   console.log('params', param, courseId);
 
       if(UserInfo && UserInfo.id){  
         const formData = new FormData();
@@ -248,10 +259,10 @@ const Home = ({ navigation, route }) => {
             .then(async (res) => {
                 console.log('get quizzes res', res.data.data, formData)
                 if (res.data.Error == 0) {
-                    setLoader(false);
+                    setQuizLoader(false);
                     setHomeSection(res.data.data);
                 } else if(res.data.Error == 1) {
-                    setLoader(false);
+                    setQuizLoader(false);
                     Toast.show({
                         text1: res.data.message,
                         type: 'error',
@@ -262,21 +273,21 @@ const Home = ({ navigation, route }) => {
                         bottomOffset: 40,
                         leadingIcon: null
                     });
-                }
+                } else { setQuizLoader(false); }
             }).catch((err) => {
-                setLoader(false); 
+                setQuizLoader(false); 
                 console.log('get quizzes', err)
             })
-       } else { setLoader(false); }  
+       } else { setQuizLoader(false); }  
     }
 
     const getFilterData = () => {
         
         axiosClient().post('courses/getCourses')
             .then(async (res) => {
-                //console.log('get Courses res', res.data)
+                console.log('get filter res', res.data)
                 if (res.data.Error == 0) {
-                    // setHomeSection(res.data.data);
+                    setTopTabBar(res.data.data);
                     setOption(res.data.data);
                 } else if(res.data.Error == 1) {
                     console.log('get Courses error', res)
@@ -406,7 +417,7 @@ const Home = ({ navigation, route }) => {
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 onPress={() => {setWalletModal(true); setViewHide(true)}}
-                                style={styles.walletView}>
+                                style={[styles.walletView,{marginLeft:5}]}>
                                 <View>
                                     <Image style={{width:20,height:20}} source={require('../../assets/wallet.png')} />
                                 </View>
@@ -428,14 +439,18 @@ const Home = ({ navigation, route }) => {
                         position={'top'}
                         coverScreen={true}
                         backdropColor={'#000'}
-                        onClosed={()=> setWalletModal(false)}>
+                        onClosed={()=> setWalletModal(false)}
+                        backButtonClose={true}>
                         <View>
                             <Text style={styles.walletModalText}>Total balance</Text>
                             <View style={styles.walletAmount}>
                                 <FontAwesomeIcon name='rupee' size={15} color='#000' style={{marginTop:10}} />
                                 <Text style={[styles.walletModalText,styles.SofiaFont,{fontWeight:'bold',marginTop:5}]}>{Balance}</Text>
                             </View>
-                            <TouchableOpacity onPress={()=>navigation.navigate('AddCash', {Balance: Balance})} 
+                            <TouchableOpacity onPress={()=> {
+                                setWalletModal(false);
+                                navigation.navigate('AddCash', {userId: UserInfo.id ,Balance: Balance})
+                            }} 
                                 style={styles.AddBtn}>
                                 <Text style={[styles.button,styles.SofiaFont]}>{'ADD CASH'}</Text>
                             </TouchableOpacity>
@@ -531,7 +546,7 @@ const Home = ({ navigation, route }) => {
                             {sliderImages && sliderImages.length>0?<FlatListSlider
                                 data={sliderImages}
                                 width={windowWidth}
-                                height={100}
+                                height={120}
                                 timer={4000}
                                 component={<Preview />}
                                 onPress={item => { 
@@ -543,59 +558,108 @@ const Home = ({ navigation, route }) => {
                                 }}
                             />:null}
 
-                                <View style={styles.upcomingView}>
+                            <View style={{width:'90%',alignSelf:'center',marginTop: 15,paddingBottom:0.5,borderWidth:0.2,borderColor:'#A9A9A9'}}>
+                            <ScrollView
+                                horizontal={true}
+                                // style={{width:'90%',alignSelf:'center'}}
+                                // contentContainerStyle={{alignItems:'center'}}
+                                showsHorizontalScrollIndicator={false}>
+                                <TouchableOpacity
+                                style={{
+                                    width: 50,
+                                    height: 45,
+                                    backgroundColor: '#fff',
+                                    borderRightWidth:0.2,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderBottomWidth: 'all' == activeBar ? 5 : 0,
+                                    borderBottomColor: '#598EF6'
+                                }} onPress={()=> { setActiveBar('all'); getUpcomingQuizList('All'); } }>
+                                <Image source={require('../../assets/myprofile/your_exmas_icon.png')} style={{ height: 25, width: 25 }} />
+                                <Text style={{ color: '#000', fontWeight: 'bold',fontSize:8 }}>{'All'}</Text>
+                                </TouchableOpacity>
+                                {topTabBar.map((item, i) => (
+                                    <TouchableOpacity
+                                        key={i}
+                                        style={{
+                                            width: 50,
+                                            height: 45,
+                                            backgroundColor: '#fff',
+                                            borderRightWidth:0.2,
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            borderBottomWidth: i == activeBar ? 5 : 0,
+                                            borderBottomColor: '#598EF6'
+                                        }} onPress={()=> { setActiveBar(i); getUpcomingQuizList(item.id); } }>
+                                        {item.thumbnail?<Image source={{uri: item.thumbnail}} style={{ height: 20, width: 20 }} />
+                                        :<Ionicon name='filter' size={20} color='#000' />}
+                                        <Text style={{ color: '#000', fontWeight: 'bold',fontSize:8 }}>
+                                            {item.coursename}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </ScrollView>
+                            </View>
+
+                                {/* <View style={styles.upcomingView}>
                                     <Text style={styles.upcomingText}>
                                         Upcoming Quizzes
                                     </Text>
                                     <TouchableOpacity onPress={() => setFilterShow(true)}>
                                         <Ionicon name='filter' size={20} color='#000' style={{ marginRight:10 }} />
                                     </TouchableOpacity>
-                                </View>
+                                </View> */}
                                 {/* <TimerComponent time={60} /> */}
 
-                                <View style={{flex: 1}}>
+                                <View style={{flex: 1,justifyContent: "center",alignContent :'center'}}>
+                                {QuizLoader ?
+                                <View style={{ flex: 1, justifyContent: "center", alignItems: "center",marginTop: windowHeight/5}}>
+                                    <ActivityIndicator color={"#A9A9A9"} size={'large'} />
+                                </View>
+                                :
                                 <ScrollView
-                                showsHorizontalScrollIndicator={false}
-                                style={{marginVertical:10}}>
-                                {homeSection && homeSection.length>0 ? homeSection.map((item, i) => {
+                                    showsHorizontalScrollIndicator={false}
+                                    style={{marginVertical:10}}>
+                                    {homeSection && homeSection.length>0 ? homeSection.map((item, i) => {
 
-                                const expDate = moment(item.startdate); // create moment from string with format 
-                                const nowDate = moment(new Date()); // new moment -> today 
-                                const diff = expDate.diff(nowDate, 'seconds'); // returns 366 
+                                    const expDate = moment(item.startdate); // create moment from string with format 
+                                    const nowDate = moment(new Date()); // new moment -> today 
+                                    const diff = expDate.diff(nowDate, 'seconds'); // returns 366 
 
-                                // () => setCurrentTime(diff);
-                                // console.log('date remain', expDate.diff(nowDate, 'days'));
-                                return(
-                                <View key={i}>
-                                {/* {QuizEnd == true ? null :  */}
-                                <QuizModal 
-                                    width={'95%'}
-                                    item={item}
-                                    nowDate={nowDate}
-                                    expDate={expDate}
-                                    diff={diff}
-                                    onPress = {() => {
-                                        setQuizItem(item);
-                                        item.join_id == null
-                                        ? navigation.navigate('JoinQuiz', {userId: UserInfo.id, item: item})
-                                        : setCountdownModal(true);
-                                    }} 
-                                    onFinish={() => {
-                                        console.log('quiz time finish');
-                                        setQuizEnd(true);
-                                    }}
-                                    // onChange={until => {
-                                    //     if (countdownModal == true && CurrentTime == 0) {
-                                    //         console.log('until', until);
-                                    //         setCurrentTime(until);
-                                    //     }
-                                    // }}
-                                />
-                                {/* } */}
-                            </View>
-                                )}) : <EmptyScreen />}
-                        </ScrollView>
-
+                                    // () => setCurrentTime(diff);
+                                    // console.log('date remain', expDate.diff(nowDate, 'days'));
+                                    return(
+                                    <View key={i}>
+                                    {/* {QuizEnd == true ? null :  */}
+                                    <QuizModal 
+                                        width={'95%'}
+                                        item={item}
+                                        nowDate={nowDate}
+                                        expDate={expDate}
+                                        diff={diff}
+                                        onPress = {() => {
+                                            setQuizItem(item);
+                                            item.join_id == null
+                                            ? navigation.navigate('JoinQuiz', {userId: UserInfo.id, item: item, Amount:Balance})
+                                            : setCountdownModal(true);
+                                        }} 
+                                        onFinish={() => {
+                                            console.log('quiz time finish');
+                                            setQuizEnd(true);
+                                        }}
+                                        // onChange={until => {
+                                        //     if (countdownModal == true && CurrentTime == 0) {
+                                        //         console.log('until', until);
+                                        //         setCurrentTime(until);
+                                        //     }
+                                        // }}
+                                    />
+                                    {/* } */}
+                                        </View>
+                                    )}) : <EmptyScreen />}
+                                </ScrollView>}
+                                </View>
+                    
                         
                         {/* <ScrollView
                             showsHorizontalScrollIndicator={false}
@@ -658,9 +722,6 @@ const Home = ({ navigation, route }) => {
                                     </TouchableOpacity>
                             ))}
                     </ScrollView> */}
-
-                    </View>
-                    
 
                         {/* {quizList.length > 0 &&
                             <>
@@ -755,7 +816,9 @@ const Home = ({ navigation, route }) => {
                     position={'bottom'}
                     backdropColor={'#000'}
                     coverScreen={true}
-                    onClosed={()=> setFilterShow(false)}>
+                    onClosed={()=> setFilterShow(false)}
+                    backdrop={true}
+                    backButtonClose={true}>
                     <View>
                         
                         <View style={styles.filterView}>
@@ -812,19 +875,22 @@ const Home = ({ navigation, route }) => {
                     countdownModal={countdownModal}
                     QuizItem={QuizItem}
                     CurrentTime={CurrentTime}
-                    Language={Language && Language}
+                    Language={Language ? Language : ''}
+                    distributionPlan={() => navigation.navigate('JoinQuiz', {userId: UserInfo.id, item: QuizItem, Amount:Balance}) }
                     onClosed={() => { setCountdownModal(false); setCurrentTime(0); setLanguage(); } }
-                    onValueChange={(itemValue, itemIndex) =>
+                    onValueChange={(itemValue, itemIndex) => {
+                        console.log('picker ', itemValue, itemIndex)
                         setLanguage(itemValue)
+                        }
                     }
                     onFinish={()=> setEnableBtn(true) }
                     onPress={()=> 
                         // CurrentTime == 0
-                        enableBtn
-                        ? 
+                        // enableBtn
+                        // ? 
                         navigation.navigate('MyTests', { userid: UserInfo.id, quiz_key: QuizItem.key, })
-                        : 
-                        null 
+                        // : 
+                        // null 
                     }
                     //     () =>
                     //     navigation.navigate('MyTests', {

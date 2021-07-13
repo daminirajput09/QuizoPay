@@ -202,7 +202,8 @@ const MyTests = ({navigation, route}) => {
     axiosClient()
       .post('quizzes/practice', formData)
       .then(async res => {
-        //console.log('quizzes res', res.data.data);
+        console.log('quizzes res', res.data);
+        console.log('serial data from api', JSON.parse(serials).serials);
         //console.log('all res', res.data.data.questions);
         setIsLoading(false);
         if (res.data.Error == 0) {
@@ -258,19 +259,19 @@ const MyTests = ({navigation, route}) => {
       });
   };
 
-  const questionChange = () => {
-    if (serials && serials.length > 0) {
-      let findThisQues = serials.findIndex((e) => e.s == quesIndex + 1);
-      if (findThisQues == -1) {
-        setAnswer(null)
-      } else {
-        const getClass = serials[findThisQues].GetClass
-        const getAns = serials[findThisQues].awnsered;
-        if (getClass == "has_answered") { setAnswer(parseInt(getAns)) }
-        else { setAnswer(null) }
-      }
-    }
-  }
+  // const questionChange = () => {
+  //   if (serials && serials.length > 0) {
+  //     let findThisQues = serials.findIndex((e) => e.s == quesIndex + 1);
+  //     if (findThisQues == -1) {
+  //       setAnswer(null)
+  //     } else {
+  //       const getClass = serials[findThisQues].GetClass
+  //       const getAns = serials[findThisQues].awnsered;
+  //       if (getClass == "has_answered") { setAnswer(parseInt(getAns)) }
+  //       else { setAnswer(null) }
+  //     }
+  //   }
+  // }
 
   const onNextQuestion = () => {
     //console.log('next ques index', quesIndex, select);
@@ -303,6 +304,7 @@ const MyTests = ({navigation, route}) => {
         'time': (quizData.questiontime) - seconds
       }
       serials[findThisQues] = newStr;
+      console.log('push data', newStr);
       setSerials(serials);
       //console.log('new str is', newStr, 'find index is', findThisQues);
     }
@@ -322,7 +324,7 @@ const MyTests = ({navigation, route}) => {
     axiosClient()
       .post('quizzes/submit', formData)
       .then(async res => {
-        //console.log('submit quiz res', res.data, formData);
+        console.log('submit quiz res', res.data, formData, serials);
         setIsLoading(false);
         if (res.data.Error == 0) {
           //console.log('quiz submitted successfully');
@@ -351,7 +353,7 @@ const MyTests = ({navigation, route}) => {
     <View style={styles.Container}>
       <StatusBar backgroundColor={'#252C49'} barStyle={'light-content'} />
 
-      {isLoading ? (
+      {quizData == null || isLoading ? (
         <Loader isLoading={isLoading} />
       ) : (
         <ScrollView
@@ -361,12 +363,12 @@ const MyTests = ({navigation, route}) => {
           <View style={[styles.barView]}>
             <LinearGradient
               style={{
-                width: `${(seconds / 15) * 100}%`,
+                width: `${(seconds / quizData.questiontime) * 100}%`,
                 height: 33,
                 borderTopLeftRadius: 25,
-                borderTopRightRadius: seconds != 15 ? 5 : 25,
+                borderTopRightRadius: seconds != quizData.questiontime ? 5 : 25,
                 borderBottomLeftRadius: 25,
-                borderBottomRightRadius: seconds != 15 ? 5 : 25,
+                borderBottomRightRadius: seconds != quizData.questiontime ? 5 : 25,
               }}
               colors={['#F9506F', '#D65FB5', '#BC6BEB']}
               start={{x: 0, y: 0}}
@@ -562,7 +564,8 @@ const MyTests = ({navigation, route}) => {
               backdropPressToClose={true}
               position={'center'}
               backdropColor={'#000'}
-              coverScreen={true}>
+              coverScreen={true}
+              backButtonClose={true}>
               <View style={{flex:1}}>
                   {/* <View style={{}}></View> */}
               </View>

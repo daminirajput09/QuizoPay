@@ -97,7 +97,8 @@ const Store = ({ navigation }) => {
                     backdropPressToClose={true}
                     position={'bottom'}
                     backdropColor={'#000'}
-                    coverScreen={true}>
+                    coverScreen={true}
+                    backButtonClose={true}>
                     <View style={{flex:1}}>
                         
                         <View style={{flexDirection:'row',paddingHorizontal:10,paddingTop:5}}>
