@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { BackHandler, Text, View, StyleSheet, ToastAndroid, Image, TouchableOpacity, ScrollView, Alert, StatusBar, Dimensions, } from 'react-native'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-// import { MyContext } from '../components/UseContext';
 import Modal from 'react-native-modal';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';

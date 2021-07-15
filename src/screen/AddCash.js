@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 import Loader from '../components/Loader';
-import {MyContext} from '../components/UseContext';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Entypo';
 import AntIcon from 'react-native-vector-icons/AntDesign';

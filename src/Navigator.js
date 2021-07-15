@@ -8,41 +8,11 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '
 import DeviceInfo from 'react-native-device-info';
 import Splash from './screen/Splash';
 import Login from './screen/Login';
-// import IntroScreen from './screen/Intro';
 import Home from './screen/Home';
 import MyTests from './screen/MyTests';
-// import Saved from './screen/Saved'
-import { MyContext } from './components/UseContext'
-// import Doubt from './screen/Doubt';
-// import MyVideoLectures from './screen/MyVideoLectures';
-import MyProfile from './screen/MyProfile';
-import BuyVideo from './screen/BuyVideoLecture';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'
-import ViewPackage from './screen/ViewPackage';
-// import PayYourFee from './screen/PayYourFee';
 import SignUp from './screen/SignUp';
-// import SelectCourse from './screen/SelectCourse';
-// import Passes from './screen/Passes';
-// import Checkout from './screen/Checkout';
-// import Coupon from './screen/Coupon';
-import VideoSolution from './screen/VideoSolution';
 import TopperList from './screen/TopperList';
-import Promo from './screen/Promo';
-import Settings from './screen/Settings'
-// import Transaction from './screen/Transaction'
-// import Profile from './screen/Profile';
-import YourExams from './screen/YourExams';
-// import SubExams from './screen/SubExams';
-import Account from './screen/Account';
-// import ViewSavedQuestion from './screen/ViewSavedQuestion';
-import OrderSummary from './screen/OrderSummary';
-// import Exams from './screen/Exams';
-// import ExamCategory from './screen/ExamCategory';
-// import ViewExamCategory from './screen/ViewExamCategory';
-import Blog from './screen/Blog';
-import { WebView } from 'react-native-webview'
-// import MyDoubts from './screen/MyDoubts';
-// import ViewDoubt from './screen/ViewDoubt';
 import Register from './screen/Register';
 import SignIn from './screen/SignIn';
 import SignInOtp from './screen/SignInOtp';
@@ -51,16 +21,6 @@ import MyQuiz from './screen/MyQuiz';
 import RecentTransactions from './screen/RecentTransactions';
 import ManagePayment from './screen/ManagePayment';
 import AfterLoginOTP from './screen/AfterLoginOTP';
-
-// import QuizSection from './screen/QuizSection';
-import QuizStart from './screen/QuizStart';
-import BlogPost from './screen/BlogPost';
-// import QuizResult from './screen/QuizResult';
-// import QuizSolution from './screen/QuizSolution';
-import AllExamReview from './screen/AllExamReview';
-// import Feedback from './screen/Feedback';
-import AttemptedQuiz from './screen/AttemptedQuiz';
-import axiosClient from './api/axios-client';
 import ForgotPassword from './screen/ForgotPassword';
 import Notifications from './screen/Notifications';
 import ViewNotification from './screen/ViewNotification';
@@ -84,11 +44,6 @@ import SpinWin from './screen/SpinWin';
 import TopWinner from './screen/TopWinner';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Store from './screen/Store';
-import {
-    GoogleSignin,
-    GoogleSigninButton,
-    statusCodes,
-} from 'react-native-google-signin';
 import { firebase } from '@react-native-firebase/auth';
 import JoinQuiz from './screen/JoinQuiz';
 
@@ -104,40 +59,11 @@ const AppNavigator = () => {
         <NavigationContainer>
             <Navigator headerMode='none' initialRouteName='Splash'>
                 <Screen name='Splash' component={Splash} />
-                {/* <Screen name='Intro' component={IntroScreen} /> */}
                 <Screen name='Login' component={Login} />
                 <Screen name='Home' component={myDrawer} />
                 <Screen name='MyProfile' component={myDrawer} />
                 <Screen name='MyTests' component={MyTests} />
-                {/* <Screen name='ViewPackage' component={ViewPackage} /> */}
-                {/* <Screen name='PayYourFee' component={PayYourFee} /> */}
                 <Screen name='SignUp' component={SignUp} />
-                {/* <Screen name='SelectCourse' component={SelectCourse} /> */}
-                {/* <Screen name='Passes' component={Passes} /> */}
-                {/* <Screen name='Checkout' component={Checkout} /> */}
-                {/* <Screen name='Coupon' component={Coupon} /> */}
-                {/* <Screen name='VideoSolution' component={VideoSolution} /> */}
-                {/* <Screen name='TopperList' component={TopperList} /> */}
-                {/* <Screen name='Promo' component={Promo} /> */}
-                {/* <Screen name='Profile' component={Profile} /> */}
-                {/* <Screen name='YourExams' component={YourExams} /> */}
-                {/* <Screen name='SubExams' component={SubExams} /> */}
-                {/* <Screen name='Account' component={Account} /> */}
-                {/* <Screen name='ViewSavedQuestion' component={ViewSavedQuestion} /> */}
-                {/* <Screen name='OrderSummary' component={OrderSummary} /> */}
-                {/* <Screen name='Exams' component={Exams} /> */}
-                {/* <Screen name='ExamCategory' component={ExamCategory} /> */}
-                {/* <Screen name='ViewCategory' component={ViewExamCategory} /> */}
-                {/* <Screen name='Blog' component={Blog} /> */}
-                {/* <Screen name='BlogPost' component={BlogPost} /> */}
-                {/* <Screen name='QuizSection' component={QuizSection} /> */}
-                {/* <Screen name='QuizStart' component={QuizStart} /> */}
-                {/* <Screen name='QuizResult' component={QuizResult} /> */}
-                {/* <Screen name='QuizSolution' component={QuizSolution} /> */}
-                {/* <Screen name='Feedback' component={Feedback} /> */}
-                {/* <Screen name='AttemptedQuiz' component={AttemptedQuiz} /> */}
-                {/* <Screen name='MyDoubts' component={MyDoubts} /> */}
-                {/* <Screen name='ViewDoubt' component={ViewDoubt} /> */}
                 <Screen name='ForgotPassword' component={ForgotPassword} />
                 <Screen name='Notifications' component={Notifications} />
                 <Screen name='ViewNotification' component={ViewNotification} />
@@ -340,8 +266,6 @@ const getUserData = async() => {
 
 const myDrawer = ({ navigation }) => {
 
-    const { user } = useContext(MyContext);
-
     // const drawerLabelPass = () => {
     //     return(
     //         <View style={{flexDirection:'row',width:300}}>
@@ -372,7 +296,7 @@ const myDrawer = ({ navigation }) => {
             inactiveTintColor: '#000', /* Font color for inactive screens' labels */
             labelStyle: { color: 'red',fontWeight:'normal' },
           }}
-        drawerStyle={{margin:0,padding:0}} drawerContent={props => <CustomDrawerContent {...props} user={user} navigation={navigation} />} drawerPosition={'left'}>
+        drawerStyle={{margin:0,padding:0}} drawerContent={props => <CustomDrawerContent {...props} navigation={navigation} />} drawerPosition={'left'}>
             <Drawer.Screen name="Home" component={HomeStackScreen}
                 options={{
                     drawerLabel: () => (<Text>{'Home'}</Text>),
@@ -465,7 +389,7 @@ const myDrawer = ({ navigation }) => {
                 drawerLabel: () => (<Text>Logout</Text>),
                 // labelStyle: { fontWeight: 'bold' },
                 drawerIcon: ({ focused, size }) => (
-                    <Image source={require('../assets/icons/logoutD.png')} style={{ height: 20, width: 20 }} />
+                    <Image source={require('../assets/drawericon/logoutD.png')} style={{ height: 20, width: 20 }} />
                 )
             }}></Drawer.Screen>
             <Drawer.Screen name="spinYourLuck" component={SpinWin} options={{
@@ -480,7 +404,7 @@ const myDrawer = ({ navigation }) => {
 }
 
 function CustomDrawerContent(props) {
-    const { user, navigation } = props;
+    // const { user, navigation } = props;
 
     getUserData()
 

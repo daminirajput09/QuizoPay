@@ -12,7 +12,6 @@ import {
 import axiosClient from '../api/axios-client';
 import {useIsFocused} from '@react-navigation/native';
 import Loader from '../components/Loader';
-// import {MyContext} from '../components/UseContext';
 import Header from '../components/Header';
 import AutoHeightWebView from 'react-native-autoheight-webview';
 import { WebView } from 'react-native-webview'
@@ -23,7 +22,6 @@ const windowWidth = Dimensions.get('window').width;
 
 const Notifications = ({navigation, route}) => {
 
-  // const { user } = useContext(MyContext);
   const isFocused = useIsFocused();
   const [loader, setLoader] = useState(false);
   const [List, setList] = useState([]);

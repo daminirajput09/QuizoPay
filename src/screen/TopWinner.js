@@ -25,7 +25,7 @@ const TopWinner = ({ navigation, route }) => {
     const [loader, setLoader] = useState(false);
     const [TopWinners, setTopWinners] = useState([1,2,3,4]);
     const [UserId, setUserId] = useState();
-    const [barItem, setBarItem] = useState([]);
+    const [barItem, setBarItem] = useState(['BANK']);
     const [activeBar, setActiveBar] = useState(0);
     const [QuizRank, setQuizRank] = useState([1,2,3,4]);
     
@@ -59,7 +59,7 @@ const TopWinner = ({ navigation, route }) => {
             console.log('get winner res',res.data, formData);
             if(res.data.Error == 0){
                 setBarItem(res.data.data);
-                getQuizRanks(0);
+                getQuizRanks(res.data.data[0].key);
             } else if(res.data.Error == 1) {
               Toast.show({
                 text1: res.data.message,
@@ -85,12 +85,12 @@ const TopWinner = ({ navigation, route }) => {
       const getQuizRanks = (param) => {
         // if(User && User.id){
 
-        let key = barItem[param].key;
-        console.log('key in rank', key, barItem[param]);
+        // let key = barItem[param].key;
+        // console.log('key in rank', key, barItem[param]);
 
           const formData = new FormData();
           formData.append('userid', UserId); // User.id
-          formData.append('quizkey', key); // quiz_key
+          formData.append('quizkey', param); // quiz_key
           axiosClient().post('quizzes/getQuizRanks',formData)
           .then((res) => {
             setLoader(false);
@@ -313,7 +313,7 @@ const TopWinner = ({ navigation, route }) => {
                                     alignItems: 'center',
                                     backgroundColor: i == activeBar ? '#fff' : '#476EDC',
                                     borderRadius:10
-                                }} onPress={()=> { setActiveBar(i); getQuizRanks(i); } }>
+                                }} onPress={()=> { setActiveBar(i); getQuizRanks(barItem[i].key); } }>
                                 <Text style={{ color: i == activeBar ? '#476EDC' : '#fff', fontWeight: 'bold',fontSize:14 }}>
                                     {item.name}
                                 </Text>

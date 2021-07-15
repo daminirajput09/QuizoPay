@@ -5,7 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axiosClient from '../api/axios-client';
 import FormInput from '../components/FormInput';
 import Button from '../components/Button';
-// import { MyContext } from '../components/UseContext';
 import DeviceInfo from 'react-native-device-info';
 // import {
 //     GoogleSignin,
@@ -51,7 +50,6 @@ const SignUp = ({ navigation, route }) => {
     const [email, setEmail] = useState('')
     const [number, setNumber] = useState('')
     const [password, setPassword] = useState('')
-    // const { userId } = useContext(MyContext)
     const [error, setError] = useState(false)
 
 

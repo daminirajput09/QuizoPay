@@ -23,26 +23,16 @@ import { checkVersion } from 'react-native-check-version';
 import Modal from 'react-native-modalbox';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-import EntypoIcon from 'react-native-vector-icons/Entypo';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast, {BaseToast} from 'react-native-toast-message';
 import FlatListSlider from '../components/rawFlatListSlider';
 import Preview from '../components/ChildItem';
 import { Tooltip } from 'react-native-elements';
-import OcticonsIcon from 'react-native-vector-icons/Octicons';
-import ContentLoader, { Facebook } from 'react-content-loader'
 import EmptyScreen from '../components/EmptyScreen';
-import CountDown from 'react-native-countdown-component';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import moment from 'moment';
-import LinearGradient from 'react-native-linear-gradient';
-import {Picker} from '@react-native-picker/picker';
-import AntIcon from 'react-native-vector-icons/AntDesign';
-import TimerComponent from '../components/TimerComponent';
 import QuizModal from '../components/QuizModal';
 import ModalComponent from '../components/ModalComponent';
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -75,7 +65,7 @@ const Home = ({ navigation, route }) => {
 
     const [enableBtn, setEnableBtn] = useState(false);
 
-    const [activeBar, setActiveBar] = useState('all');
+    const [activeBar, setActiveBar] = useState('All');
     const [topTabBar, setTopTabBar] = useState(['All']);
 
     const [modal1, setModal1] = useState(false);
@@ -131,48 +121,13 @@ const Home = ({ navigation, route }) => {
         }
     }, [updateType]);
 
-    // const Support = (props) => {
-    //     let url = 'whatsapp://send?text=' + '' + '&phone=91' + 9414037884;
-    //     Linking.openURL(url)
-    //         .then((data) => {
-    //             console.log('WhatsApp Opened successfully ' + data); //<---Success
-    //         })
-    //         .catch(() => {
-    //             Alert.alert('Make sure WhatsApp installed on your device'); //<---Error
-    //         });
-    //     navigation.navigate('Home');
-    // };
-
-    // const ShareYourApp = async () => {
-    //     try {
-    //         const result = await Share.share({
-    //             message: 'App ready to share!' + '\n' + 'https://play.google.com/store/apps/details?id=com.allexamreview.exambook',
-    //         });
-    //         if (result.action === Share.sharedAction) {
-    //             if (result.activityType) {
-    //                 // shared with activity type of result.activityType
-    //                 // console.log('share result if', result);
-    //             } else {
-    //                 // shared
-    //                 // console.log('share result else', result);
-    //             }
-    //         } else if (result.action === Share.dismissedAction) {
-    //             // dismissed
-    //             // console.log('share result else if', result);
-    //         }
-    //         navigation.navigate('Home');
-    //     } catch (error) {
-    //         alert(error.message);
-    //     }
-    // };
-
     useEffect(() => {
         getFcmToken();
     }, [isFocused]);
 
     const onRefresh = useCallback(() => {
         imageSlider();
-        getUpcomingQuizList();
+        getUpcomingQuizList('All');
         getFilterData();
     }, [FcmToken, UserInfo]);
 
@@ -214,7 +169,7 @@ const Home = ({ navigation, route }) => {
 
     useEffect(() => {
         imageSlider();
-        getUpcomingQuizList();
+        getUpcomingQuizList('All');
         getFilterData();
         if(UserInfo && UserInfo.id){
           WalletBalance();
@@ -296,16 +251,6 @@ const Home = ({ navigation, route }) => {
                 console.log('get Courses', err)
             })
     }
-
-
-    // const MyLoader = () => (
-    //     <ContentLoader viewBox="0 0 380 70">
-    //       {/* Only SVG shapes */}    
-    //       <rect x="0" y="0" rx="5" ry="5" width="70" height="70" />
-    //       <rect x="80" y="17" rx="4" ry="4" width="300" height="13" />
-    //       <rect x="80" y="40" rx="3" ry="3" width="250" height="10" />
-    //     </ContentLoader>
-    // )   
     
     useEffect(() => {
         if (duration > 0) {
@@ -361,24 +306,27 @@ const Home = ({ navigation, route }) => {
         }    
     }
 
-    // const listCountDown = (time) => {
-    //     console.log('time is', time);
-    //     setSec(time*60);
-    //     useEffect(() => {
-    //         if (sec > 0) {
-    //           setTimeout(() => setSec(sec - 1), 1000);
-    //         //   return sec;
-    //         } else {
-    //             setSec(0);
-    //         }
-    //       },[sec]);
-    // }
+    const MyLoader = () => {
+      return(
+        <SkeletonPlaceholder>
+            <SkeletonPlaceholder.Item width={"100%"} marginTop={0} height={50} borderRadius={0} />
+            <SkeletonPlaceholder.Item paddingHorizontal={15}>
+                <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={10} />
+                <SkeletonPlaceholder.Item width={"100%"} marginTop={20} height={50} />
+                <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={20} />
+                <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={10} />
+                <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={10} />
+                <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={10} />
+            </SkeletonPlaceholder.Item>
+        </SkeletonPlaceholder>
+    )}
     
     return (
         <View style={{flex:1}}>
             {isFocused ? (<StatusBar backgroundColor={'#598EF6'} barStyle={'light-content'} />) : null}
             {loader ? (
-                <Loader isLoading={loader} />
+                // <Loader isLoading={loader} />
+                <MyLoader />
             ) : (
                 // <ImageBackground source={require('../../assets/splash/AppBg.jpg')} style={styles.ContainerBg}>
                 <View style={styles.ContainerBg}>
@@ -566,24 +514,24 @@ const Home = ({ navigation, route }) => {
                                 showsHorizontalScrollIndicator={false}>
                                 <TouchableOpacity
                                 style={{
-                                    width: 50,
-                                    height: 45,
+                                    width: 65,
+                                    height: 50,
                                     backgroundColor: '#fff',
                                     borderRightWidth:0.2,
                                     justifyContent: 'center',
                                     alignItems: 'center',
-                                    borderBottomWidth: 'all' == activeBar ? 5 : 0,
+                                    borderBottomWidth: 'All' == activeBar ? 5 : 0,
                                     borderBottomColor: '#598EF6'
-                                }} onPress={()=> { setActiveBar('all'); getUpcomingQuizList('All'); } }>
-                                <Image source={require('../../assets/myprofile/your_exmas_icon.png')} style={{ height: 25, width: 25 }} />
+                                }} onPress={()=> { setActiveBar('All'); getUpcomingQuizList('All'); } }>
+                                <Image source={require('../../assets/drawericon/your_exmas_icon.png')} style={{ height: 25, width: 25 }} />
                                 <Text style={{ color: '#000', fontWeight: 'bold',fontSize:8 }}>{'All'}</Text>
                                 </TouchableOpacity>
                                 {topTabBar.map((item, i) => (
                                     <TouchableOpacity
                                         key={i}
                                         style={{
-                                            width: 50,
-                                            height: 45,
+                                            width: 65,
+                                            height: 50,
                                             backgroundColor: '#fff',
                                             borderRightWidth:0.2,
                                             justifyContent: 'center',
@@ -609,7 +557,6 @@ const Home = ({ navigation, route }) => {
                                         <Ionicon name='filter' size={20} color='#000' style={{ marginRight:10 }} />
                                     </TouchableOpacity>
                                 </View> */}
-                                {/* <TimerComponent time={60} /> */}
 
                                 <View style={{flex: 1,justifyContent: "center",alignContent :'center'}}>
                                 {QuizLoader ?

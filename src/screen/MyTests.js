@@ -22,6 +22,7 @@ import axiosClient from '../api/axios-client';
 import Toast, {BaseToast} from 'react-native-toast-message';
 import AutoHeightWebView from 'react-native-autoheight-webview';
 import Modal from 'react-native-modalbox';
+import { useIsFocused } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -32,6 +33,7 @@ const MyTests = ({navigation, route}) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const timerRef = useRef(null);
+  const isFocused = useIsFocused();
 
   const [seconds, setSeconds] = useState();
   const [option, setOption] = useState([1, 2, 3]);
@@ -71,6 +73,10 @@ const MyTests = ({navigation, route}) => {
     velocityThreshold: 0.3,
     directionalOffsetThreshold: 80,
   };
+
+  useEffect(()=> {
+    fetchQuizData();
+  },[isFocused])
 
   const successIcon = require('../../assets/close.png');
 
@@ -201,13 +207,12 @@ const MyTests = ({navigation, route}) => {
     formData.append('quiz_key', quiz_key);
     axiosClient()
       .post('quizzes/practice', formData)
-      .then(async res => {
-        console.log('quizzes res', res.data);
-        console.log('serial data from api', JSON.parse(serials).serials);
-        //console.log('all res', res.data.data.questions);
+      .then(res => {
+        console.log('quizzes start res', res.data.data.questions);
+
         setIsLoading(false);
         if (res.data.Error == 0) {
-          setAllQuestion(res.data.data.questions);
+          // setAllQuestion(res.data.data.questions);
           setAllQuizData(res.data.data);
 
           const {
@@ -218,11 +223,17 @@ const MyTests = ({navigation, route}) => {
             timeremaining,
             totalQuestions,
           } = res.data.data;
+
+          let JSONSerial = JSON.parse(serials);
+          console.log('json serials', JSONSerial);
+
+          setAllQuestion(questions);
+
           setQuizData(quiz);
           setSeconds(quiz.questiontime);
           setQuizTime(quiz.duration); //timeremaining ? timeremaining : 
           setQuestions(questions);
-          setSerials(JSON.parse(serials).serials);
+          setSerials(JSONSerial.serials);
           setQuesIndex(
             LastActiveQuestion != null ? parseInt(LastActiveQuestion) : 0,
           );
@@ -236,7 +247,9 @@ const MyTests = ({navigation, route}) => {
           setQuesEng(questions[quesIndex].question_eng == "" ? null : questions[quesIndex].question_eng)
           setQuesHin(questions[quesIndex].question_hin == "" ? null : questions[quesIndex].question_hin)
     
-        } else {
+        } else if(res.data.Error == 1) {
+          console.log('quiz start api else');
+
           setQuizData([]);
           setQuestions([]);
           setSerials([]);
@@ -254,6 +267,7 @@ const MyTests = ({navigation, route}) => {
         }
       })
       .catch(err => {
+        console.log('quiz start api error',err);
         setIsLoading(false);
         //console.log('quizzes error', err);
       });
@@ -317,6 +331,7 @@ const MyTests = ({navigation, route}) => {
     
     //console.log('serial data', stringified);
 
+    console.log('submit quiz res before', stringified, serials);
     const formData = new FormData();
     formData.append('userid', userid);
     formData.append('quiz_key', quiz_key);
@@ -324,7 +339,7 @@ const MyTests = ({navigation, route}) => {
     axiosClient()
       .post('quizzes/submit', formData)
       .then(async res => {
-        console.log('submit quiz res', res.data, formData, serials);
+        console.log('submit quiz res', res.data, formData);
         setIsLoading(false);
         if (res.data.Error == 0) {
           //console.log('quiz submitted successfully');
@@ -448,6 +463,7 @@ const MyTests = ({navigation, route}) => {
                   let char = String.fromCharCode(97 + i);
                   return (
                     <TouchableOpacity
+                    key={i}
                       onPress={()=> { setSelect(i); onSaveQuestion(i) }}
                       style={[styles.optionView,{borderColor: select == i ? '#fff' : '#21496C'}]}>
                       <Text style={styles.option}>{i + 1}. </Text>
@@ -497,7 +513,8 @@ const MyTests = ({navigation, route}) => {
                   let char = String.fromCharCode(97 + i);
                   return (
                     <TouchableOpacity
-                    onPress={()=>setSelect(i)}
+                    key={i}
+                    onPress={()=> { setSelect(i); onSaveQuestion(i); }}
                     style={[styles.optionView,{borderColor: select == i ? '#fff' : '#21496C'}]}>
                       <Text style={styles.option}>{i + 1}. </Text>
                       {questions &&

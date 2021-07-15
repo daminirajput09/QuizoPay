@@ -524,7 +524,7 @@ const JoinQuiz = ({navigation, route}) => {
                 QuizPrizeDistribution && QuizPrizeDistribution.length > 0
                   ? FirstRoute
                   : EmptyScreen
-              }
+              } listeners={{ tabPress: e => { quizPriceDistribution(); }}}
             />
             <Tab.Screen
               name="Leaderboard"
@@ -532,7 +532,7 @@ const JoinQuiz = ({navigation, route}) => {
                 LeaderBoard && LeaderBoard.length > 0
                   ? SecondRoute
                   : EmptyScreen
-              }
+              } listeners={{ tabPress: e => { quizLeadersBoard(); }}}
             />
           </Tab.Navigator>
 

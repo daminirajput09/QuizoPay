@@ -199,7 +199,7 @@ dependencies {
     // implementation 'com.google.firebase:firebase-analytics'
     
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-    implementation project(':react-native-linear-gradient')
+    // implementation project(':react-native-linear-gradient')
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.firebase:firebase-auth'
 

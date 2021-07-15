@@ -88,6 +88,23 @@ const MyQuiz = ({navigation, route}) => {
   },[]);
 
   useEffect(() => {
+    console.log('tab pressed!!!');
+    const unsubscribe = navigation.addListener('tabPress', e => {
+      // Prevent default behavior
+      // e.preventDefault();
+  
+      console.log('tab pressed 1!!!',e);
+
+      // Do something manually
+      // ...
+    });
+  
+    return unsubscribe;
+  }, []);
+  
+
+  useEffect(() => {
+    console.log('user and isfocused', User, isFocused);
     // getUser();
     if(User){
       setLoader(true);
@@ -331,6 +348,7 @@ const MyQuiz = ({navigation, route}) => {
             <Tab.Screen name="Live" component={LiveQuiz && LiveQuiz.length>0?FirstRoute:EmptyScreen} />
             <Tab.Screen name="Completed" component={UpcomingQuiz && UpcomingQuiz.length>0? SecondRoute : EmptyScreen } />
           </Tab.Navigator> */}
+
           <Tab.Navigator
             tabBarOptions={{
               activeTintColor: '#C61D24',
@@ -345,8 +363,11 @@ const MyQuiz = ({navigation, route}) => {
                 height: 50,
               },
             }}>
-            <Tab.Screen name="Live" component={LiveQuiz && LiveQuiz.length>0?FirstRoute:EmptyScreen} />
-            <Tab.Screen name="Completed" component={UpcomingQuiz && UpcomingQuiz.length>0? SecondRoute : EmptyScreen } />
+            <Tab.Screen name="Live" component={LiveQuiz && LiveQuiz.length>0?FirstRoute:EmptyScreen}
+            listeners={{ tabPress: e => { getLiveQuiz(); }}}
+           />
+            <Tab.Screen name="Completed" component={UpcomingQuiz && UpcomingQuiz.length>0? SecondRoute : EmptyScreen }
+            listeners={{ tabPress: e => { getUpComingQuiz(); }}} />
           </Tab.Navigator>
 
           {loader ? (
