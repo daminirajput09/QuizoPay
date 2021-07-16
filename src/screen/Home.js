@@ -33,6 +33,8 @@ import moment from 'moment';
 import QuizModal from '../components/QuizModal';
 import ModalComponent from '../components/ModalComponent';
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import FreeQuizModal from '../components/FreeQuizModal';
+import FreeModalComponent from '../components/FreeModalComponent';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -48,6 +50,8 @@ const Home = ({ navigation, route }) => {
     const [quizList, setQuizList] = useState([]);
     const [Count, setCount] = useState(null);
     const [homeSection, setHomeSection] = useState([]);
+    const [FreeQuiz, setFreeQuiz] = useState([]);
+    
     const [walletModal, setWalletModal] = useState(false);
     const [viewHide, setViewHide] = useState(true);
     const [filterShow, setFilterShow] = useState(false);
@@ -58,6 +62,8 @@ const Home = ({ navigation, route }) => {
     const [courseId, setCourseId] = useState('All');
     const [Balance, setBalance] = useState(0);
     const [countdownModal, setCountdownModal] = useState(false);
+    const [FreeCountdownModal, setFreeCountdownModal] = useState(false);
+    
     const [QuizItem, setQuizItem] = useState([]);
     const [CurrentTime, setCurrentTime] = useState(0);
     const [QuizEnd, setQuizEnd] = useState(false);
@@ -216,6 +222,7 @@ const Home = ({ navigation, route }) => {
                 if (res.data.Error == 0) {
                     setQuizLoader(false);
                     setHomeSection(res.data.data);
+                    setFreeQuiz(res.data.freequiz);
                 } else if(res.data.Error == 1) {
                     setQuizLoader(false);
                     Toast.show({
@@ -564,10 +571,28 @@ const Home = ({ navigation, route }) => {
                                     <ActivityIndicator color={"#A9A9A9"} size={'large'} />
                                 </View>
                                 :
+                                <View>
+
+                                {(FreeQuiz && FreeQuiz.length>0) || (homeSection && homeSection.length>0) ? 
+                                <View style={{marginVertical:10}}>
                                 <ScrollView
-                                    showsHorizontalScrollIndicator={false}
-                                    style={{marginVertical:10}}>
-                                    {homeSection && homeSection.length>0 ? homeSection.map((item, i) => {
+                                    showsHorizontalScrollIndicator={false}>
+                                    {FreeQuiz && FreeQuiz.length>0 && FreeQuiz.map((item, i) => {
+                                    return(
+                                      <FreeQuizModal
+                                        width={'95%'}
+                                        item={item}
+                                        onPress = {() => {
+                                            setQuizItem(item);
+                                            setFreeCountdownModal(true);
+                                        }}  
+                                      />
+                                    )})}
+                                </ScrollView>
+
+                                <ScrollView
+                                    showsHorizontalScrollIndicator={false}>
+                                    {homeSection && homeSection.length>0 && homeSection.map((item, i) => {
 
                                     const expDate = moment(item.startdate); // create moment from string with format 
                                     const nowDate = moment(new Date()); // new moment -> today 
@@ -578,6 +603,15 @@ const Home = ({ navigation, route }) => {
                                     return(
                                     <View key={i}>
                                     {/* {QuizEnd == true ? null :  */}
+                                    {/* {item.quiztype == 'freequiz'?
+                                    <FreeQuizModal
+                                        width={'95%'}
+                                        item={item}
+                                        onPress = {() => {
+                                            setQuizItem(item);
+                                            setFreeCountdownModal(true);
+                                        }}  
+                                    /> : */}
                                     <QuizModal 
                                         width={'95%'}
                                         item={item}
@@ -603,8 +637,12 @@ const Home = ({ navigation, route }) => {
                                     />
                                     {/* } */}
                                         </View>
-                                    )}) : <EmptyScreen />}
-                                </ScrollView>}
+                                    )})}
+                                </ScrollView>
+
+                                </View>:<EmptyScreen />}
+
+                                </View>}
                                 </View>
                     
                         
@@ -845,6 +883,25 @@ const Home = ({ navigation, route }) => {
                     //       quiz_key: QuizItem.key,
                     //     })
                     // }
+                />
+
+                <FreeModalComponent 
+                    navigation={navigation}
+                    userId={UserInfo && UserInfo.id}
+                    quizKey={QuizItem && QuizItem.key}
+                    FreeCountdownModal={FreeCountdownModal}
+                    QuizItem={QuizItem}
+                    // CurrentTime={CurrentTime}
+                    Language={Language ? Language : ''}
+                    // distributionPlan={() => navigation.navigate('JoinQuiz', {userId: UserInfo.id, item: QuizItem, Amount:Balance}) }
+                    onClosed={() => { setCountdownModal(false); setCurrentTime(0); setLanguage(); } }
+                    onValueChange={(itemValue, itemIndex) => {
+                        console.log('picker ', itemValue, itemIndex)
+                        setLanguage(itemValue)
+                        }
+                    }
+                    // onFinish={()=> setEnableBtn(true) }
+                    onPress={()=> navigation.navigate('MyTests', { userid: UserInfo.id, quiz_key: QuizItem.key, }) }
                 />
 
             <Modal

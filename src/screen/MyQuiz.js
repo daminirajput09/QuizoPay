@@ -34,6 +34,7 @@ import { Tooltip } from 'react-native-elements';
 import QuizModal from '../components/QuizModal';
 import ModalComponent from '../components/ModalComponent';
 import Modal from 'react-native-modal';
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const MyQuiz = ({navigation, route}) => {
   const Tab = createMaterialTopTabNavigator();
@@ -232,6 +233,21 @@ const MyQuiz = ({navigation, route}) => {
     }    
   }
 
+  const MyLoader = () => {
+    return(
+      <SkeletonPlaceholder>
+          {/* <SkeletonPlaceholder.Item width={"100%"} height={50} borderRadius={0} /> */}
+          <SkeletonPlaceholder.Item width={"100%"} height={50} />
+          <SkeletonPlaceholder.Item paddingHorizontal={15}>
+              <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={10} />
+              <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={20} />
+              <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={10} />
+              <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={10} />
+              <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={10} />
+          </SkeletonPlaceholder.Item>
+      </SkeletonPlaceholder>
+  )}
+
   const FirstRoute = () => (
       <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
         
@@ -322,15 +338,19 @@ const MyQuiz = ({navigation, route}) => {
 
   return (
     <View style={{flex: 1}}>
-      {/* {loader ? (
-        <Loader isLoading={loader} />
-      ) : ( */}
-        <View style={{flex: 1}}>
-
           <AppHeader
             Header={'My Quizzes'}
             onPress={() => navigation.push('Home')}
           />
+        {loader ? (
+            // <Loader isLoading={loader} />
+            // <Modal isVisible={loader} style={{flex: 1,justifyContent:'center',alignItems:'center'}}>
+            //     <ActivityIndicator color={"#A9A9A9"} size={'large'} />
+            // </Modal>
+            <MyLoader />
+          ) : (
+        <View style={{flex: 1}}>
+
           {/* <Tab.Navigator
             tabBarOptions={{
               activeTintColor: '#C61D24',
@@ -370,12 +390,13 @@ const MyQuiz = ({navigation, route}) => {
             listeners={{ tabPress: e => { getUpComingQuiz(); }}} />
           </Tab.Navigator>
 
-          {loader ? (
+          {/* {loader ? (
             // <Loader isLoading={loader} />
-            <Modal isVisible={loader} style={{flex: 1,justifyContent:'center',alignItems:'center'}}>
-                <ActivityIndicator color={"#A9A9A9"} size={'large'} />
-            </Modal>
-          ) : (
+            // <Modal isVisible={loader} style={{flex: 1,justifyContent:'center',alignItems:'center'}}>
+            //     <ActivityIndicator color={"#A9A9A9"} size={'large'} />
+            // </Modal>
+            <MyLoader />
+          ) : ( */}
 
           <ModalComponent 
               userId={User && User.id}
@@ -405,10 +426,10 @@ const MyQuiz = ({navigation, route}) => {
                   null 
               }
           />
-          )}
 
         </View>
 
+        )}
 
       <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
 

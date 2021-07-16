@@ -12,6 +12,7 @@ import axiosClient from '../api/axios-client';
 import Loader from '../components/Loader';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {useIsFocused} from '@react-navigation/native';
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const TopWinner = ({ navigation, route }) => {
 
@@ -22,7 +23,7 @@ const TopWinner = ({ navigation, route }) => {
 
     // const [loading, setLoading] = useState(false)
     // const [ActiveContest, setActiveContest] = useState('6lakh')
-    const [loader, setLoader] = useState(false);
+    const [loader, setLoader] = useState(true);
     const [TopWinners, setTopWinners] = useState([1,2,3,4]);
     const [UserId, setUserId] = useState();
     const [barItem, setBarItem] = useState(['BANK']);
@@ -121,6 +122,40 @@ const TopWinner = ({ navigation, route }) => {
         navigation.goBack();
         return true;
     };
+
+    const MyLoader = () => {
+        return(
+          <SkeletonPlaceholder>
+              <SkeletonPlaceholder.Item width={"100%"} height={50} />
+              <SkeletonPlaceholder.Item width={"90%"} height={55} alignSelf={'center'} marginTop={10} />
+
+              <SkeletonPlaceholder.Item paddingHorizontal={15} width={'100%'} alignItems={'flex-end'} flexDirection={'row'} justifyContent={'space-between'}>
+
+                <SkeletonPlaceholder.Item width={'30%'} alignItems={'center'}>
+                    <SkeletonPlaceholder.Item width={60} height={60} borderRadius={100} marginTop={10} />
+                    <SkeletonPlaceholder.Item width={100} height={65} borderTopLeftRadius={4} borderTopRightRadius={4} marginTop={10} />
+                </SkeletonPlaceholder.Item>
+                <SkeletonPlaceholder.Item width={'30%'} alignItems={'center'}>
+                <SkeletonPlaceholder.Item width={60} height={60} borderRadius={100} marginTop={10} />
+                    <SkeletonPlaceholder.Item width={100} height={100} borderTopLeftRadius={4} borderTopRightRadius={4} marginTop={10} />
+                </SkeletonPlaceholder.Item>
+                <SkeletonPlaceholder.Item width={'30%'} alignItems={'center'}>
+                <SkeletonPlaceholder.Item width={60} height={60} borderRadius={100} marginTop={10} />
+                    <SkeletonPlaceholder.Item width={100} height={90} borderTopLeftRadius={4} borderTopRightRadius={4} marginTop={10} />
+                </SkeletonPlaceholder.Item>
+
+              </SkeletonPlaceholder.Item>
+
+              <SkeletonPlaceholder.Item paddingHorizontal={0}>
+                  <SkeletonPlaceholder.Item width={"100%"} height={55} borderRadius={4} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={70} borderRadius={4} marginTop={5} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={70} borderRadius={4} marginTop={5} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={70} borderRadius={4} marginTop={5} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={70} borderRadius={4} marginTop={5} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={70} borderRadius={4} marginTop={5} />
+              </SkeletonPlaceholder.Item>
+          </SkeletonPlaceholder>
+      )}
 
     const Route = () => (
             <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}} contentContainerStyle={{alignItems:'center'}}>
@@ -221,7 +256,8 @@ const TopWinner = ({ navigation, route }) => {
     return (
         <View style={{flex:1}}>
         {loader ? (
-            <Loader isLoading={loader} />
+            // <Loader isLoading={loader} />
+            <MyLoader />
         ) : (
         <View style={{flex:1}}>
 

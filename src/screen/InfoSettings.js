@@ -14,6 +14,7 @@ import AppHeader from '../components/AppHeader';
 import Loader from '../components/Loader';
 import { useIsFocused } from '@react-navigation/native';
 import Toast, {BaseToast} from 'react-native-toast-message';
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
@@ -247,6 +248,32 @@ const InfoSettings = ({ navigation, route }) => {
             })
     }
 
+    const MyLoader = () => {
+        return(
+          <SkeletonPlaceholder>
+              {/* <SkeletonPlaceholder.Item width={"100%"} height={50} /> */}
+              <SkeletonPlaceholder.Item paddingHorizontal={10}>
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={40} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={60} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={60} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={60} />
+              </SkeletonPlaceholder.Item>
+
+              <SkeletonPlaceholder.Item paddingHorizontal={10} marginTop={30} width={"100%"} flexDirection={'row'} justifyContent={'space-between'}>
+                <SkeletonPlaceholder.Item width={150} height={50} borderRadius={4} />
+                <SkeletonPlaceholder.Item width={150} height={50} borderRadius={4} />
+              </SkeletonPlaceholder.Item>
+
+              <SkeletonPlaceholder.Item paddingHorizontal={10}>
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={40} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={60} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={60} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={60} />
+              </SkeletonPlaceholder.Item>
+              <SkeletonPlaceholder.Item width={"100%"} height={50} marginTop={20} />
+
+          </SkeletonPlaceholder>
+    )}
 
     return (
     <View style={{flex: 1,backgroundColor:'#F8FAF8'}}>
@@ -254,7 +281,8 @@ const InfoSettings = ({ navigation, route }) => {
         <AppHeader Header={'My Info & Settings'} onPress={() => backPress()} />
 
         {loading ? (
-                <Loader isLoading={loading} />
+                // <Loader isLoading={loading} />
+                <MyLoader />
         ) : (
 
         <ScrollView keyboardShouldPersistTaps="always">

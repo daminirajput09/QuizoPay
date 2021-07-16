@@ -7,6 +7,7 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import AppHeader from '../components/AppHeader';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const Store = ({ navigation }) => {
 
@@ -33,9 +34,34 @@ const Store = ({ navigation }) => {
         return true;
     };
 
+    const MyLoader = () => {
+        return(
+          <SkeletonPlaceholder>
+              <SkeletonPlaceholder.Item width={"100%"} height={50} />
+
+              <SkeletonPlaceholder.Item paddingHorizontal={10} width={'100%'} flexDirection={'row'}>
+                <SkeletonPlaceholder.Item width={120} height={55} borderRadius={100} marginTop={15} marginRight={5} />
+                <SkeletonPlaceholder.Item width={120} height={55} borderRadius={100} marginTop={10} marginRight={5} />
+                <SkeletonPlaceholder.Item width={120} height={55} borderRadius={100} marginTop={10} marginRight={5} />
+              </SkeletonPlaceholder.Item>
+
+              <SkeletonPlaceholder.Item paddingHorizontal={10}>
+                  <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={20} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={5} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={5} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={5} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={5} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={5} />
+              </SkeletonPlaceholder.Item>
+          </SkeletonPlaceholder>
+    )}
+
     return (
         <>
-            { loading ? <Loader isLoading={loading} /> : <View style={{ flex: 1 }}>
+            { loading ? 
+            // <Loader isLoading={loading} />
+            <MyLoader />
+             : <View style={{ flex: 1 }}>
 
                 <AppHeader Header={'Store'} onPress={() => handleBackPress()} />
 

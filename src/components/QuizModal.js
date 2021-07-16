@@ -90,7 +90,7 @@ const QuizModal = (props) => {
               size={12}
               timeToShow={['H', 'M', 'S']} //'D', 
               timeLabels={{h: null, m: null, s: null}} //d: null, 
-              digitStyle={{backgroundColor: '#FFF', width: 15}}
+              digitStyle={{backgroundColor: '#FFF', width: 22}}
               digitTxtStyle={{color: '#000'}}
               showSeparator
             />}

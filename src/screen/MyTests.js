@@ -331,37 +331,50 @@ const MyTests = ({navigation, route}) => {
     
     //console.log('serial data', stringified);
 
-    console.log('submit quiz res before', stringified, serials);
-    const formData = new FormData();
-    formData.append('userid', userid);
-    formData.append('quiz_key', quiz_key);
-    formData.append('serials', stringified);
-    axiosClient()
-      .post('quizzes/submit', formData)
-      .then(async res => {
-        console.log('submit quiz res', res.data, formData);
-        setIsLoading(false);
-        if (res.data.Error == 0) {
-          //console.log('quiz submitted successfully');
-          navigation.navigate('Home');
-        } else {
-          Toast.show({
-            text1: res.data.message,
-            type: 'error',
-            position: 'top',
-            visibilityTime: 4000,
-            autoHide: true,
-            topOffset: 0,
-            bottomOffset: 40,
-            leadingIcon: null,
-          });
-        }
-      })
-      .catch(err => {
-        setIsLoading(false);
-        //console.log('submit quiz error', err);
+    if(stringified){
+      console.log('submit quiz res before', stringified, serials);
+      const formData = new FormData();
+      formData.append('userid', userid);
+      formData.append('quiz_key', quiz_key);
+      formData.append('serials', stringified);
+      axiosClient()
+        .post('quizzes/submit', formData)
+        .then(async res => {
+          console.log('submit quiz res', res.data, formData);
+          setIsLoading(false);
+          if (res.data.Error == 0) {
+            //console.log('quiz submitted successfully');
+            navigation.navigate('Home');
+          } else {
+            Toast.show({
+              text1: res.data.message,
+              type: 'error',
+              position: 'top',
+              visibilityTime: 4000,
+              autoHide: true,
+              topOffset: 0,
+              bottomOffset: 40,
+              leadingIcon: null,
+            });
+          }
+        })
+        .catch(err => {
+          setIsLoading(false);
+          //console.log('submit quiz error', err);
+        });
+    } else {
+      setIsLoading(false);
+      Toast.show({
+        text1: 'Something went wrong, Try again!',
+        type: 'error',
+        position: 'top',
+        visibilityTime: 4000,
+        autoHide: true,
+        topOffset: 0,
+        bottomOffset: 40,
+        leadingIcon: null,
       });
-
+    }
   }
 
   return (

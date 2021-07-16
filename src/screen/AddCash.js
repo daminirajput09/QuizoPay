@@ -17,6 +17,7 @@ import AntIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import axiosClient from '../api/axios-client';
 import Toast,{BaseToast} from 'react-native-toast-message';
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const AddCash = ({navigation, route}) => {
 
@@ -71,7 +72,7 @@ const AddCash = ({navigation, route}) => {
     const onAddCash = () => {
       setLoader(true);
 
-    if(userId && amount){  
+    if(userId && amount>0){  
       const formData = new FormData();
       formData.append('userid', userId);
       formData.append('amount', amount);
@@ -118,6 +119,24 @@ const AddCash = ({navigation, route}) => {
       return true;
   };
 
+  const MyLoader = () => {
+    return(
+      <SkeletonPlaceholder>
+          <SkeletonPlaceholder.Item width={"100%"} height={50} />
+
+          <SkeletonPlaceholder.Item width={100} height={50} marginTop={50} alignSelf={'center'} />
+
+          <SkeletonPlaceholder.Item paddingHorizontal={10}>
+              <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={20} />
+              <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={50} />
+              <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={100} />
+              <SkeletonPlaceholder.Item width={"100%"} height={50} borderRadius={4} marginTop={20} />
+              <SkeletonPlaceholder.Item width={"100%"} height={50} borderRadius={4} marginTop={10} />
+              <SkeletonPlaceholder.Item width={"100%"} height={50} borderRadius={4} marginTop={10} />
+          </SkeletonPlaceholder.Item>
+      </SkeletonPlaceholder>
+  )}
+
   return (
     <View style={{flex: 1,backgroundColor:'#CDCED2'}}>
         <StatusBar backgroundColor={'#0D0E10'} barStyle={'light-content'} />
@@ -136,6 +155,7 @@ const AddCash = ({navigation, route}) => {
 
       {loader ? (
           <Loader isLoading={loader} />
+          // <MyLoader />
       ) : (
     <ScrollView>
         <View style={{width:'100%',flexDirection:'row',padding:15,backgroundColor:'#fff'}}>

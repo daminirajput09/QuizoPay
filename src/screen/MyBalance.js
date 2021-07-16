@@ -12,10 +12,11 @@ import { Tooltip } from 'react-native-elements';
 import {useIsFocused} from '@react-navigation/native';
 import AppHeader from '../components/AppHeader';
 import Toast, {BaseToast} from 'react-native-toast-message';
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const MyBalance = ({ navigation }) => {
 
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [viewHide, setViewHide] = useState(true);
     const [Balance, setBalance] = useState(0);
     const [UserInfo, setUserInfo] = useState();
@@ -83,8 +84,10 @@ const MyBalance = ({ navigation }) => {
             .then(async (res) => {
                 // //console.log('get Balance res', res.data, formData)
                 if (res.data.Error == 0) {
+                    setLoading(false);
                     setBalance(res.data.balance);
                 } else if(res.data.Error == 1) {
+                    setLoading(false);
                     Toast.show({
                         text1: res.data.message,
                         type: 'error',
@@ -97,9 +100,11 @@ const MyBalance = ({ navigation }) => {
                     });
                 }
             }).catch((err) => {
+                setLoading(false);
                 //console.log('get Balance', err)
             })
         } else {
+            setLoading(false);
             Toast.show({
                 text1: 'User Id not found!',
                 type: 'error',
@@ -127,9 +132,30 @@ const MyBalance = ({ navigation }) => {
         return true;
     };
 
+    const MyLoader = () => {
+        return(
+          <SkeletonPlaceholder>
+              <SkeletonPlaceholder.Item width={"100%"} height={50} />
+
+              <SkeletonPlaceholder.Item width={100} height={50} marginTop={50} alignSelf={'center'} />
+
+              <SkeletonPlaceholder.Item paddingHorizontal={10}>
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={20} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={50} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={100} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={50} borderRadius={4} marginTop={20} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={50} borderRadius={4} marginTop={10} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={50} borderRadius={4} marginTop={10} />
+              </SkeletonPlaceholder.Item>
+          </SkeletonPlaceholder>
+    )}
+
     return (
         <>
-            { loading ? <Loader isLoading={loading} /> : <View style={{ flex: 1 }}>
+            { loading ? 
+                // <Loader isLoading={loading} />
+                <MyLoader />
+            : <View style={{ flex: 1 }}>
             <AppHeader Header={'My Balance'} onPress={() => navigation.goBack()} />
 
         <ScrollView keyboardShouldPersistTaps="always">

@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from '@react-navigation/native';
 import Loading from '../components/Loader';
 import AntIcon from 'react-native-vector-icons/AntDesign';
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -136,6 +137,24 @@ const VerifyAccount = ({ navigation, route }) => {
         }
     }
 
+    const MyLoader = () => {
+        return(
+          <SkeletonPlaceholder>
+              {/* <SkeletonPlaceholder.Item width={"100%"} height={50} borderRadius={0} /> */}
+              <SkeletonPlaceholder.Item width={"100%"} height={50} />
+              <SkeletonPlaceholder.Item paddingHorizontal={0}>
+                  <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={5} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={40} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={60} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={60} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={60} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={2} borderRadius={4} marginTop={60} />
+                  {/* <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={10} />
+                  <SkeletonPlaceholder.Item width={"100%"} height={100} borderRadius={4} marginTop={10} /> */}
+              </SkeletonPlaceholder.Item>
+          </SkeletonPlaceholder>
+    )}
+
     return (
     <View style={{flex: 1,backgroundColor:'#F8FAF8'}}>
         <StatusBar backgroundColor={'#000000'} barStyle={'light-content'} />
@@ -153,7 +172,8 @@ const VerifyAccount = ({ navigation, route }) => {
         </View>
 
         {Loader ? (
-                <Loading isLoading={Loader} />
+                // <Loading isLoading={Loader} />
+                <MyLoader />
         ) : (
         <ScrollView keyboardShouldPersistTaps="always">
 
