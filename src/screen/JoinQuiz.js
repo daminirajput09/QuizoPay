@@ -437,6 +437,7 @@ const JoinQuiz = ({navigation, route}) => {
           />
 
           <QuizModal
+            key={i}
             width={'100%'}
             item={item}
             nowDate={moment(new Date())}

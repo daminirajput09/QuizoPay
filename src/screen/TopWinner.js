@@ -60,7 +60,7 @@ const TopWinner = ({ navigation, route }) => {
             console.log('get winner res',res.data, formData);
             if(res.data.Error == 0){
                 setBarItem(res.data.data);
-                getQuizRanks(res.data.data[0].key);
+                getQuizRanks(userInfo.id,res.data.data[0].key);
             } else if(res.data.Error == 1) {
               Toast.show({
                 text1: res.data.message,
@@ -83,14 +83,14 @@ const TopWinner = ({ navigation, route }) => {
 
     }
 
-      const getQuizRanks = (param) => {
+      const getQuizRanks = (id,param) => {
         // if(User && User.id){
 
         // let key = barItem[param].key;
         // console.log('key in rank', key, barItem[param]);
 
           const formData = new FormData();
-          formData.append('userid', UserId); // User.id
+          formData.append('userid', id); // User.id
           formData.append('quizkey', param); // quiz_key
           axiosClient().post('quizzes/getQuizRanks',formData)
           .then((res) => {

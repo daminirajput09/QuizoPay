@@ -262,6 +262,7 @@ const MyQuiz = ({navigation, route}) => {
 
             return (
               <QuizModal 
+                key={i}
                 width={'95%'}
                 item={item}
                 expDate={expDate}
@@ -294,7 +295,7 @@ const MyQuiz = ({navigation, route}) => {
   );
 
   const SecondRoute = () => (
-      <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
+      // <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1,backgroundColor:'red'}}>
         
         <ScrollView
           showsHorizontalScrollIndicator={false}
@@ -306,6 +307,7 @@ const MyQuiz = ({navigation, route}) => {
 
             return (
               <QuizModal 
+                key={i}
                 width={'95%'}
                 item={item}
                 expDate={expDate}
@@ -319,21 +321,21 @@ const MyQuiz = ({navigation, route}) => {
                 //     ? navigation.navigate('JoinQuiz', {userId: User.id, item: item})
                 //     : setCountdownModal(true);
                 // }}
-                onFinish={() => {
+                // onFinish={() => {
                     //console.log('quiz time finish');
                     // setQuizEnd(true);
-                }}
-                onChange={until => {
+                // }}
+                // onChange={until => {
                     // if (countdownModal == true) {
                       // //console.log('until', until);
                       // setCurrentTime(until);
                     // }
-                }}
+                // }}
             />
           )})}
         </ScrollView>
       
-      </ScrollView>
+      // </ScrollView>
   );
 
   return (
