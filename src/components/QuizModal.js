@@ -36,7 +36,7 @@ const QuizModal = (props) => {
 
   return (
     AllTime <= 0 && buffer <= 0 ? null :
-    <View style={[styles.homeSectionView,{width:props.width}]}>
+    <View style={[styles.homeSectionView,{width:props.width}]} key={props.key}>
       <TouchableOpacity
         activeOpacity={0.5}
         onPress={props.onPress}

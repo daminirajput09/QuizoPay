@@ -315,10 +315,11 @@ const MyTests = ({navigation, route}) => {
         's': quesIndex + 1,
         'GetClass': 'has_answered',
         'awnsered': index.toString(),
-        'time': (quizData.questiontime) - seconds
+        'time': (quizData.questiontime) - seconds,
+        'level': serials[quesIndex].level
       }
       serials[findThisQues] = newStr;
-      console.log('push data', newStr);
+      console.log('push data', newStr,' ques index', quesIndex, serials[quesIndex].level);
       setSerials(serials);
       //console.log('new str is', newStr, 'find index is', findThisQues);
     }

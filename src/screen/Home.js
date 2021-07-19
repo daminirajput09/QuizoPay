@@ -613,6 +613,7 @@ const Home = ({ navigation, route }) => {
                                         }}  
                                     /> : */}
                                     <QuizModal 
+                                        key={i}
                                         width={'95%'}
                                         item={item}
                                         nowDate={nowDate}
